@@ -33,8 +33,8 @@ The codebase is AGPL v3 — you can run it commercially, modify it, whatever you
 
 Looking for feedback on the architecture, the self-hosting experience, and whether the feature set actually matches what service businesses need. Happy to answer questions about the RLS multi-tenancy setup or anything else.
 
-GitHub: https://github.com/stephendeslate/savspot
-Self-hosting docs: https://github.com/stephendeslate/savspot/blob/main/docs/self-hosting.md
+GitHub: https://github.com/sjd-labs/savspot
+Self-hosting docs: https://github.com/sjd-labs/savspot/blob/main/docs/self-hosting.md
 Live demo: https://savspot.co/book/demo-barbershop
 
 ---
@@ -49,7 +49,7 @@ I've been building a booking platform for service businesses and just open-sourc
 
 **Quick setup:**
 ```bash
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 ./scripts/install.sh
 ```
@@ -78,8 +78,8 @@ This pulls Docker images, generates keys, runs migrations, and starts everything
 
 There's also a managed cloud at savspot.co if you don't want to self-host, but the self-hosted version has zero artificial limitations.
 
-GitHub: https://github.com/stephendeslate/savspot
-Docs: https://github.com/stephendeslate/savspot/blob/main/docs/self-hosting.md
+GitHub: https://github.com/sjd-labs/savspot
+Docs: https://github.com/sjd-labs/savspot/blob/main/docs/self-hosting.md
 Live demo: https://savspot.co/book/demo-barbershop
 
 Happy to answer questions or take feature requests!
@@ -112,8 +112,8 @@ I wanted the code to stay open. AGPL ensures that if someone takes the code and 
 
 The project includes a CONTRIBUTING.md with dev setup instructions if you want to hack on it.
 
-GitHub: https://github.com/stephendeslate/savspot
-Self-hosting guide: https://github.com/stephendeslate/savspot/blob/main/docs/self-hosting.md
+GitHub: https://github.com/sjd-labs/savspot
+Self-hosting guide: https://github.com/sjd-labs/savspot/blob/main/docs/self-hosting.md
 Live demo: https://savspot.co/book/demo-barbershop
 
 ---

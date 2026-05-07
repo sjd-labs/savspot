@@ -219,7 +219,7 @@ export default function Home() {
               Self-Host
             </Link>
             <a
-              href="https://github.com/stephendeslate/savspot"
+              href="https://github.com/sjd-labs/savspot"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -261,7 +261,7 @@ export default function Home() {
 
           <div className="relative mx-auto max-w-6xl px-4 py-24 text-center sm:py-32 lg:py-36">
             <a
-              href="https://github.com/stephendeslate/savspot"
+              href="https://github.com/sjd-labs/savspot"
               target="_blank"
               rel="noopener noreferrer"
               className="mx-auto mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-1.5 text-sm font-medium text-muted-foreground shadow-sm transition-colors hover:text-foreground"
@@ -288,7 +288,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-border bg-background px-8 text-base font-medium transition-colors hover:bg-secondary"
@@ -478,7 +478,7 @@ export default function Home() {
                   ))}
                 </ul>
                 <a
-                  href="https://github.com/stephendeslate/savspot"
+                  href="https://github.com/sjd-labs/savspot"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-8 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-border bg-background text-sm font-medium transition-colors hover:bg-secondary"
@@ -630,7 +630,7 @@ export default function Home() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/20 px-8 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
@@ -667,9 +667,9 @@ export default function Home() {
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Community</p>
               <ul className="mt-3 space-y-2">
-                <li><a href="https://github.com/stephendeslate/savspot" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">GitHub</a></li>
-                <li><a href="https://github.com/stephendeslate/savspot/issues" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Issues</a></li>
-                <li><a href="https://github.com/stephendeslate/savspot/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contributing</a></li>
+                <li><a href="https://github.com/sjd-labs/savspot" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">GitHub</a></li>
+                <li><a href="https://github.com/sjd-labs/savspot/issues" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Issues</a></li>
+                <li><a href="https://github.com/sjd-labs/savspot/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Contributing</a></li>
               </ul>
             </div>
             <div>
@@ -684,7 +684,7 @@ export default function Home() {
               <ul className="mt-3 space-y-2">
                 <li><Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Terms</Link></li>
                 <li><Link href="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Privacy</Link></li>
-                <li><a href="https://github.com/stephendeslate/savspot/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">License (AGPL v3)</a></li>
+                <li><a href="https://github.com/sjd-labs/savspot/blob/main/LICENSE" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">License (AGPL v3)</a></li>
               </ul>
             </div>
           </div>

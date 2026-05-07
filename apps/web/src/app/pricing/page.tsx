@@ -32,7 +32,7 @@ const PLANS = [
     badge: 'AGPL v3',
     cta: {
       label: 'View on GitHub',
-      href: 'https://github.com/stephendeslate/savspot',
+      href: 'https://github.com/sjd-labs/savspot',
       external: true,
       variant: 'outline' as const,
     },
@@ -237,7 +237,7 @@ export default function PricingPage() {
               Self-Host
             </Link>
             <a
-              href="https://github.com/stephendeslate/savspot"
+              href="https://github.com/sjd-labs/savspot"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -364,7 +364,7 @@ export default function PricingPage() {
               </div>
               <pre className="px-4 py-3 text-left text-sm">
                 <code className="text-foreground">
-                  <span className="text-muted-foreground">$</span> git clone https://github.com/stephendeslate/savspot.git{'\n'}
+                  <span className="text-muted-foreground">$</span> git clone https://github.com/sjd-labs/savspot.git{'\n'}
                   <span className="text-muted-foreground">$</span> cd savspot{'\n'}
                   <span className="text-muted-foreground">$</span> ./scripts/install.sh
                 </code>
@@ -383,7 +383,7 @@ export default function PricingPage() {
               </Link>
               <span className="hidden text-muted-foreground/40 sm:inline">|</span>
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
@@ -485,7 +485,7 @@ export default function PricingPage() {
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/20 px-8 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
@@ -508,7 +508,7 @@ export default function PricingPage() {
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"

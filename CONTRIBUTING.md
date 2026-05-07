@@ -15,7 +15,7 @@ Thank you for considering contributing to SavSpot! This guide will help you get 
 ### Development Setup
 
 ```bash
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 
 # Start database and Redis
@@ -126,7 +126,7 @@ The `packages/ee/` directory contains enterprise features under a separate comme
 
 ## Reporting Bugs
 
-Open a [GitHub Issue](https://github.com/stephendeslate/savspot/issues) with:
+Open a [GitHub Issue](https://github.com/sjd-labs/savspot/issues) with:
 
 - Steps to reproduce
 - Expected behavior
@@ -135,4 +135,4 @@ Open a [GitHub Issue](https://github.com/stephendeslate/savspot/issues) with:
 
 ## Questions?
 
-Open a [Discussion](https://github.com/stephendeslate/savspot/discussions) on GitHub.
+Open a [Discussion](https://github.com/sjd-labs/savspot/discussions) on GitHub.

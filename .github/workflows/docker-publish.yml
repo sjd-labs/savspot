@@ -16,7 +16,7 @@ jobs:
     name: Build & Push Docker Images
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    if: github.repository == 'stephendeslate/savspot'
+    if: github.repository == 'sjd-labs/savspot'
     strategy:
       matrix:
         include:

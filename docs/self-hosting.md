@@ -12,7 +12,7 @@ Run your own SavSpot instance with Docker. No external dependencies required for
 ## Quick Start
 
 ```bash
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 ./scripts/install.sh
 ```
@@ -32,7 +32,7 @@ SavSpot will be available at `http://localhost` (or `https://yourdomain.com` if 
 If you prefer to set things up yourself:
 
 ```bash
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 
 # Create and edit your environment file

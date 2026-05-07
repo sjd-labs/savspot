@@ -63,7 +63,7 @@ export default function SelfHostingPage() {
               Self-Host
             </span>
             <a
-              href="https://github.com/stephendeslate/savspot"
+              href="https://github.com/sjd-labs/savspot"
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -114,7 +114,7 @@ export default function SelfHostingPage() {
               Clone the repo and run the install script. That&apos;s it.
             </p>
             <div className="mt-6">
-              <CodeBlock title="terminal">{`$ git clone https://github.com/stephendeslate/savspot.git
+              <CodeBlock title="terminal">{`$ git clone https://github.com/sjd-labs/savspot.git
 $ cd savspot
 $ ./scripts/install.sh`}</CodeBlock>
             </div>
@@ -176,7 +176,7 @@ $ ./scripts/install.sh`}</CodeBlock>
               If you prefer to set things up yourself:
             </p>
             <div className="mt-6">
-              <CodeBlock title="terminal">{`$ git clone https://github.com/stephendeslate/savspot.git
+              <CodeBlock title="terminal">{`$ git clone https://github.com/sjd-labs/savspot.git
 $ cd savspot
 
 # Create and edit your environment file
@@ -516,7 +516,7 @@ $ docker compose -f docker-compose.prod.yml exec web \\
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_24px_var(--glow-accent)] transition-all hover:shadow-[0_0_36px_var(--glow-accent)] hover:brightness-105"
@@ -546,7 +546,7 @@ $ docker compose -f docker-compose.prod.yml exec web \\
             </p>
             <div className="flex items-center gap-4">
               <a
-                href="https://github.com/stephendeslate/savspot"
+                href="https://github.com/sjd-labs/savspot"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-foreground transition-colors"

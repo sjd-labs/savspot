@@ -3,13 +3,13 @@
   <p align="center">
     Open-source booking platform for service businesses
     <br />
-    <a href="https://savspot.co/book/demo-barbershop">Live Demo</a> &middot; <a href="https://savspot.co">Cloud</a> &middot; <a href="docs/self-hosting.md">Self-Host</a> &middot; <a href="https://github.com/stephendeslate/savspot/issues">Issues</a>
+    <a href="https://savspot.co/book/demo-barbershop">Live Demo</a> &middot; <a href="https://savspot.co">Cloud</a> &middot; <a href="docs/self-hosting.md">Self-Host</a> &middot; <a href="https://github.com/sjd-labs/savspot/issues">Issues</a>
   </p>
 </p>
 
 <p align="center">
   <a href="LICENSE"><img alt="AGPL v3" src="https://img.shields.io/badge/license-AGPL--3.0-blue.svg" /></a>
-  <a href="https://github.com/stephendeslate/savspot/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/stephendeslate/savspot/actions/workflows/ci.yml/badge.svg" /></a>
+  <a href="https://github.com/sjd-labs/savspot/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/sjd-labs/savspot/actions/workflows/ci.yml/badge.svg" /></a>
   <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5.9-blue.svg" />
   <img alt="Node" src="https://img.shields.io/badge/Node-22-green.svg" />
 </p>
@@ -115,7 +115,7 @@ Self-host it with Docker or use the managed cloud at [savspot.co](https://savspo
 ## Quick Start (Self-Hosted)
 
 ```bash
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 ./scripts/install.sh
 ```
@@ -371,7 +371,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for the full gu
 
 ```bash
 # Quick start
-git clone https://github.com/stephendeslate/savspot.git
+git clone https://github.com/sjd-labs/savspot.git
 cd savspot
 pnpm docker:up && pnpm install && pnpm db:generate && pnpm db:migrate:dev && pnpm db:seed && pnpm dev
 ```

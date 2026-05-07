@@ -5,14 +5,14 @@
 # One-command setup for self-hosted SavSpot.
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/stephendeslate/savspot/main/scripts/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/sjd-labs/savspot/main/scripts/install.sh | bash
 #   # or
-#   git clone https://github.com/stephendeslate/savspot.git && cd savspot && ./scripts/install.sh
+#   git clone https://github.com/sjd-labs/savspot.git && cd savspot && ./scripts/install.sh
 # =============================================================================
 
 set -euo pipefail
 
-REPO_URL="https://github.com/stephendeslate/savspot.git"
+REPO_URL="https://github.com/sjd-labs/savspot.git"
 INSTALL_DIR="${SAVSPOT_DIR:-savspot}"
 
 # Colors
