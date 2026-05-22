@@ -57,9 +57,10 @@ function makeXeroProvider() {
   };
 }
 
-function makeQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn(),
+    dispatch: vi.fn().mockResolvedValue(undefined),
+    dispatchBulk: vi.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -85,20 +86,20 @@ describe('AccountingService', () => {
   let configService: ReturnType<typeof makeConfigService>;
   let quickBooksProvider: ReturnType<typeof makeQuickBooksProvider>;
   let xeroProvider: ReturnType<typeof makeXeroProvider>;
-  let queue: ReturnType<typeof makeQueue>;
+  let dispatcher: ReturnType<typeof makeDispatcher>;
 
   beforeEach(() => {
     prisma = makePrisma();
     configService = makeConfigService();
     quickBooksProvider = makeQuickBooksProvider();
     xeroProvider = makeXeroProvider();
-    queue = makeQueue();
+    dispatcher = makeDispatcher();
     service = new AccountingService(
       prisma as never,
       configService as never,
       quickBooksProvider as never,
       xeroProvider as never,
-      queue as never,
+      dispatcher as never,
     );
   });
 
@@ -248,7 +249,7 @@ describe('AccountingService', () => {
       const result = await service.triggerSync(TENANT_ID, CONNECTION_ID);
 
       expect(result).toEqual({ success: true, message: 'Sync jobs enqueued' });
-      expect(queue.add).toHaveBeenCalledTimes(3);
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(3);
     });
 
     it('enqueues only invoices sync when syncType is invoices', async () => {
@@ -256,8 +257,8 @@ describe('AccountingService', () => {
 
       await service.triggerSync(TENANT_ID, CONNECTION_ID, { syncType: 'invoices' } as never);
 
-      expect(queue.add).toHaveBeenCalledTimes(1);
-      expect(queue.add.mock.calls[0]![0]).toBe('accountingSyncInvoices');
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatcher.dispatch.mock.calls[0]![1]).toBe('accountingSyncInvoices');
     });
 
     it('enqueues only payments sync when syncType is payments', async () => {
@@ -265,8 +266,8 @@ describe('AccountingService', () => {
 
       await service.triggerSync(TENANT_ID, CONNECTION_ID, { syncType: 'payments' } as never);
 
-      expect(queue.add).toHaveBeenCalledTimes(1);
-      expect(queue.add.mock.calls[0]![0]).toBe('accountingSyncPayments');
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatcher.dispatch.mock.calls[0]![1]).toBe('accountingSyncPayments');
     });
 
     it('enqueues only clients sync when syncType is clients', async () => {
@@ -274,8 +275,8 @@ describe('AccountingService', () => {
 
       await service.triggerSync(TENANT_ID, CONNECTION_ID, { syncType: 'clients' } as never);
 
-      expect(queue.add).toHaveBeenCalledTimes(1);
-      expect(queue.add.mock.calls[0]![0]).toBe('accountingSyncClients');
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(1);
+      expect(dispatcher.dispatch.mock.calls[0]![1]).toBe('accountingSyncClients');
     });
 
     it('throws NotFoundException when connection not found or inactive', async () => {
@@ -394,7 +395,7 @@ describe('AccountingService', () => {
         message: 'Invoice sync job enqueued',
         invoiceId: INVOICE_ID,
       });
-      expect(queue.add).toHaveBeenCalledTimes(1);
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(1);
     });
 
     it('throws NotFoundException when connection not active', async () => {

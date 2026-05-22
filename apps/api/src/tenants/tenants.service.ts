@@ -4,14 +4,13 @@ import {
   ConflictException,
   Logger,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { randomUUID } from 'crypto';
 import { Prisma } from '../../../../prisma/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { SlugService } from './slug.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import {
   QUEUE_GDPR,
   JOB_PROCESS_DATA_EXPORT,
@@ -48,7 +47,7 @@ export class TenantsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly slugService: SlugService,
-    @InjectQueue(QUEUE_GDPR) private readonly gdprQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   /**
@@ -308,7 +307,8 @@ export class TenantsService {
       },
     });
 
-    await this.gdprQueue.add(
+    await this.dispatcher.dispatch(
+      QUEUE_GDPR,
       JOB_PROCESS_DATA_EXPORT,
       { dataRequestId: dataRequest.id, userId, tenantId, type: 'TENANT_EXPORT' },
       { removeOnComplete: { count: 10 }, removeOnFail: { count: 50 } },
@@ -355,14 +355,16 @@ export class TenantsService {
       },
     });
 
-    await this.gdprQueue.add(
+    await this.dispatcher.dispatch(
+      QUEUE_GDPR,
       JOB_PROCESS_DATA_EXPORT,
       { dataRequestId: dataRequest.id, userId, tenantId, type: 'DEACTIVATION_EXPORT' },
       { removeOnComplete: { count: 10 }, removeOnFail: { count: 50 } },
     );
 
     // Schedule data deletion after the 30-day grace period
-    await this.gdprQueue.add(
+    await this.dispatcher.dispatch(
+      QUEUE_GDPR,
       JOB_PROCESS_ACCOUNT_DELETION,
       { tenantId, userId, reason: 'TENANT_DEACTIVATION' },
       {

@@ -4,10 +4,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Prisma } from '../../../../prisma/generated/prisma';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
 import { ListInvoicesDto } from './dto/list-invoices.dto';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import { QUEUE_INVOICES, JOB_GENERATE_INVOICE_PDF } from '../bullmq/queue.constants';
 import { clampPageSize } from '../common/utils/pagination';
 
@@ -17,7 +16,7 @@ export class InvoicesService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(QUEUE_INVOICES) private readonly invoiceQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   /**
@@ -128,11 +127,13 @@ export class InvoicesService {
         `Invoice ${invoiceNumber} created for booking ${bookingId}`,
       );
 
-      // Enqueue PDF generation job (fire-and-forget)
-      this.invoiceQueue
-        .add(
+      // Enqueue PDF generation job (fire-and-forget). tenantId is required
+      // by InvoicePdfService for RLS set_config; previous producer omitted it.
+      this.dispatcher
+        .dispatch(
+          QUEUE_INVOICES,
           JOB_GENERATE_INVOICE_PDF,
-          { invoiceId: invoice.id },
+          { tenantId, invoiceId: invoice.id },
           { removeOnComplete: { count: 50 }, removeOnFail: { count: 20 } },
         )
         .catch((err) =>

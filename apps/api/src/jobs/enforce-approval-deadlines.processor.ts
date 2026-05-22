@@ -1,10 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { PrismaService } from '../prisma/prisma.service';
-import {
-  QUEUE_PAYMENTS,
-} from '../bullmq/queue.constants';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
+import { QUEUE_PAYMENTS } from '../bullmq/queue.constants';
 
 interface PendingApprovalRow {
   id: string;
@@ -30,7 +27,7 @@ export class EnforceApprovalDeadlinesHandler {
 
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(QUEUE_PAYMENTS) private readonly paymentsQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   async handle(): Promise<void> {
@@ -100,7 +97,10 @@ export class EnforceApprovalDeadlinesHandler {
           });
 
           if (payments.length > 0) {
-            await this.paymentsQueue.add('processRefund', {
+            // Note: no Inngest function listens to `payments/processRefund` yet
+            // — this dispatch was already a no-op under BullMQ (no @Processor
+            // consumed it). Wiring the refund automation is tracked separately.
+            await this.dispatcher.dispatch(QUEUE_PAYMENTS, 'processRefund', {
               tenantId: booking.tenant_id,
               paymentId: payments[0]!.id,
               reason: 'APPROVAL_TIMEOUT',

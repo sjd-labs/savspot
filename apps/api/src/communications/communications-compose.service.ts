@@ -2,8 +2,7 @@ import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '../../../../prisma/generated/prisma';
 import { ComposeMessageDto, ComposeChannel } from './dto/compose-message.dto';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import { QUEUE_COMMUNICATIONS, JOB_DELIVER_COMMUNICATION, JOB_DELIVER_PROVIDER_SMS } from '../bullmq/queue.constants';
 
 @Injectable()
@@ -12,7 +11,7 @@ export class CommunicationsComposeService {
 
   constructor(
     private readonly prisma: PrismaService,
-    @InjectQueue(QUEUE_COMMUNICATIONS) private readonly commsQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   async compose(tenantId: string, dto: ComposeMessageDto) {
@@ -60,7 +59,8 @@ export class CommunicationsComposeService {
         },
       });
 
-      await this.commsQueue.add(
+      await this.dispatcher.dispatch(
+        QUEUE_COMMUNICATIONS,
         JOB_DELIVER_COMMUNICATION,
         {
           communicationId: communication.id,
@@ -101,7 +101,8 @@ export class CommunicationsComposeService {
         },
       });
 
-      await this.commsQueue.add(
+      await this.dispatcher.dispatch(
+        QUEUE_COMMUNICATIONS,
         JOB_DELIVER_PROVIDER_SMS,
         {
           communicationId: communication.id,

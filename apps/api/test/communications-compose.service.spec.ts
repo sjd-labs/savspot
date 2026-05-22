@@ -22,10 +22,10 @@ function makePrisma() {
   };
 }
 
-function makeQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn(),
-    addBulk: vi.fn(),
+    dispatch: vi.fn().mockResolvedValue(undefined),
+    dispatchBulk: vi.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -51,12 +51,12 @@ function makeMembership(overrides: Record<string, unknown> = {}) {
 describe('CommunicationsComposeService', () => {
   let service: CommunicationsComposeService;
   let prisma: ReturnType<typeof makePrisma>;
-  let queue: ReturnType<typeof makeQueue>;
+  let dispatcher: ReturnType<typeof makeDispatcher>;
 
   beforeEach(() => {
     prisma = makePrisma();
-    queue = makeQueue();
-    service = new CommunicationsComposeService(prisma as never, queue as never);
+    dispatcher = makeDispatcher();
+    service = new CommunicationsComposeService(prisma as never, dispatcher as never);
   });
 
   // -----------------------------------------------------------------------
@@ -88,7 +88,8 @@ describe('CommunicationsComposeService', () => {
           }),
         }),
       );
-      expect(queue.add).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
+        'communications',
         'deliverCommunication',
         { communicationId: COMM_ID, tenantId: TENANT_ID },
         expect.objectContaining({ attempts: 3 }),
@@ -167,7 +168,8 @@ describe('CommunicationsComposeService', () => {
       });
 
       expect(result).toEqual({ id: COMM_ID, status: 'QUEUED', channel: 'SMS' });
-      expect(queue.add).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
+        'communications',
         'deliverProviderSMS',
         expect.objectContaining({
           communicationId: COMM_ID,

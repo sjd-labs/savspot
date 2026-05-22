@@ -4,8 +4,6 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import {
   randomBytes,
   randomUUID,
@@ -16,6 +14,7 @@ import { Prisma } from '../../../../../prisma/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateWebhookDto } from '../dto/create-webhook.dto';
 import { UpdateWebhookDto } from '../dto/update-webhook.dto';
+import { JobDispatcher } from '../../bullmq/job-dispatcher.service';
 import { QUEUE_WEBHOOKS } from '../../bullmq/queue.constants';
 
 @Injectable()
@@ -26,7 +25,7 @@ export class WebhookService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-    @InjectQueue(QUEUE_WEBHOOKS) private readonly webhookQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {
     const keyHex = this.configService.get<string>('WEBHOOK_ENCRYPTION_KEY');
     if (keyHex) {
@@ -171,7 +170,7 @@ export class WebhookService {
       },
     });
 
-    await this.webhookQueue.add('dispatchWebhook', {
+    await this.dispatcher.dispatch(QUEUE_WEBHOOKS, 'dispatchWebhook', {
       deliveryId: delivery.id,
     });
 
@@ -285,7 +284,8 @@ export class WebhookService {
     );
 
     if (deliveries.length > 0) {
-      await this.webhookQueue.addBulk(
+      await this.dispatcher.dispatchBulk(
+        QUEUE_WEBHOOKS,
         deliveries.map((delivery) => ({
           name: 'dispatchWebhook',
           data: { deliveryId: delivery.id },

@@ -35,10 +35,10 @@ function makeConfigService() {
   };
 }
 
-function makeQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn(),
-    addBulk: vi.fn(),
+    dispatch: vi.fn().mockResolvedValue(undefined),
+    dispatchBulk: vi.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -83,13 +83,13 @@ describe('WebhookService', () => {
   let service: WebhookService;
   let prisma: ReturnType<typeof makePrisma>;
   let configService: ReturnType<typeof makeConfigService>;
-  let queue: ReturnType<typeof makeQueue>;
+  let dispatcher: ReturnType<typeof makeDispatcher>;
 
   beforeEach(() => {
     prisma = makePrisma();
     configService = makeConfigService();
-    queue = makeQueue();
-    service = new WebhookService(prisma as never, configService as never, queue as never);
+    dispatcher = makeDispatcher();
+    service = new WebhookService(prisma as never, configService as never, dispatcher as never);
   });
 
   // -----------------------------------------------------------------------
@@ -409,7 +409,7 @@ describe('WebhookService', () => {
     it('should create a delivery with event=test and queue it', async () => {
       prisma.webhookEndpoint.findUnique.mockResolvedValue(makeEndpoint());
       prisma.webhookDelivery.create.mockResolvedValue(makeDelivery({ id: 'del-1', event: 'test' }));
-      queue.add.mockResolvedValue(undefined);
+      dispatcher.dispatch.mockResolvedValue(undefined);
 
       const result = await service.sendTest(TENANT_ID, ENDPOINT_ID);
 
@@ -426,7 +426,7 @@ describe('WebhookService', () => {
         }),
       });
 
-      expect(queue.add).toHaveBeenCalledWith('dispatchWebhook', {
+      expect(dispatcher.dispatch).toHaveBeenCalledWith('webhooks', 'dispatchWebhook', {
         deliveryId: 'del-1',
       });
 
@@ -436,7 +436,7 @@ describe('WebhookService', () => {
     it('should include a timestamp in the test payload', async () => {
       prisma.webhookEndpoint.findUnique.mockResolvedValue(makeEndpoint());
       prisma.webhookDelivery.create.mockResolvedValue(makeDelivery());
-      queue.add.mockResolvedValue(undefined);
+      dispatcher.dispatch.mockResolvedValue(undefined);
 
       await service.sendTest(TENANT_ID, ENDPOINT_ID);
 
@@ -601,7 +601,7 @@ describe('WebhookService', () => {
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', { foo: 'bar' });
 
       expect(prisma.$transaction).not.toHaveBeenCalled();
-      expect(queue.addBulk).not.toHaveBeenCalled();
+      expect(dispatcher.dispatchBulk).not.toHaveBeenCalled();
     });
 
     it('should query only active endpoints that have the event', async () => {
@@ -634,7 +634,7 @@ describe('WebhookService', () => {
       // Mock the create calls that are passed to $transaction
       prisma.webhookDelivery.create.mockImplementation((args: Record<string, unknown>) => args);
 
-      queue.addBulk.mockResolvedValue(undefined);
+      dispatcher.dispatchBulk.mockResolvedValue(undefined);
 
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', { key: 'value' });
 
@@ -651,11 +651,11 @@ describe('WebhookService', () => {
       const deliveries = [makeDelivery({ id: 'del-1' })];
       prisma.$transaction.mockResolvedValue(deliveries);
       prisma.webhookDelivery.create.mockImplementation((args: Record<string, unknown>) => args);
-      queue.addBulk.mockResolvedValue(undefined);
+      dispatcher.dispatchBulk.mockResolvedValue(undefined);
 
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', {});
 
-      expect(queue.addBulk).toHaveBeenCalledWith([
+      expect(dispatcher.dispatchBulk).toHaveBeenCalledWith('webhooks', [
         { name: 'dispatchWebhook', data: { deliveryId: 'del-1' } },
       ]);
     });
@@ -675,11 +675,12 @@ describe('WebhookService', () => {
       ];
       prisma.$transaction.mockResolvedValue(deliveries);
       prisma.webhookDelivery.create.mockImplementation((args: Record<string, unknown>) => args);
-      queue.addBulk.mockResolvedValue(undefined);
+      dispatcher.dispatchBulk.mockResolvedValue(undefined);
 
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', {});
 
-      expect(queue.addBulk).toHaveBeenCalledWith(
+      expect(dispatcher.dispatchBulk).toHaveBeenCalledWith(
+        'webhooks',
         expect.arrayContaining([
           { name: 'dispatchWebhook', data: { deliveryId: 'del-1' } },
           { name: 'dispatchWebhook', data: { deliveryId: 'del-2' } },
@@ -693,7 +694,7 @@ describe('WebhookService', () => {
       prisma.webhookEndpoint.findMany.mockResolvedValue(endpoints);
       prisma.$transaction.mockResolvedValue([makeDelivery()]);
       prisma.webhookDelivery.create.mockImplementation((args: Record<string, unknown>) => args);
-      queue.addBulk.mockResolvedValue(undefined);
+      dispatcher.dispatchBulk.mockResolvedValue(undefined);
 
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', { foo: 'bar' });
 
@@ -713,7 +714,7 @@ describe('WebhookService', () => {
       prisma.webhookEndpoint.findMany.mockResolvedValue(endpoints);
       prisma.$transaction.mockResolvedValue([makeDelivery()]);
       prisma.webhookDelivery.create.mockImplementation((args: Record<string, unknown>) => args);
-      queue.addBulk.mockResolvedValue(undefined);
+      dispatcher.dispatchBulk.mockResolvedValue(undefined);
 
       await service.dispatch(TENANT_ID, 'BOOKING_CONFIRMED', 'entity-1', {});
 

@@ -1,9 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ExecutionService } from './execution.service';
 import { StageAutomationService } from './stage-automation.service';
+import { JobDispatcher } from '../../bullmq/job-dispatcher.service';
 import { QUEUE_WEBHOOKS, JOB_EXECUTE_STAGE } from '../../bullmq/queue.constants';
 
 @Injectable()
@@ -14,7 +13,7 @@ export class StageOrchestratorService {
     private readonly prisma: PrismaService,
     private readonly executionService: ExecutionService,
     private readonly stageAutomationService: StageAutomationService,
-    @InjectQueue(QUEUE_WEBHOOKS) private readonly webhooksQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   async runWorkflow(
@@ -55,7 +54,8 @@ export class StageOrchestratorService {
         const delayDays = stage.triggerDays ?? 0;
         const delayMs = delayDays * 24 * 60 * 60 * 1000;
 
-        await this.webhooksQueue.add(
+        await this.dispatcher.dispatch(
+          QUEUE_WEBHOOKS,
           JOB_EXECUTE_STAGE,
           {
             executionId: execution.id,

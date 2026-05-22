@@ -5,8 +5,6 @@ import {
   NotImplementedException,
   Logger,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
@@ -14,6 +12,7 @@ import { QuickBooksProvider } from './providers/quickbooks.provider';
 import { XeroProvider } from './providers/xero.provider';
 import { AccountingProviderInterface, AccountingTokens } from './interfaces/accounting-provider.interface';
 import { SyncOptionsDto } from './dto/sync-options.dto';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import {
   QUEUE_ACCOUNTING,
   JOB_ACCOUNTING_SYNC_INVOICES,
@@ -36,7 +35,7 @@ export class AccountingService {
     private readonly configService: ConfigService,
     private readonly quickBooksProvider: QuickBooksProvider,
     private readonly xeroProvider: XeroProvider,
-    @InjectQueue(QUEUE_ACCOUNTING) private readonly accountingQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {
     this.providers = {
       QUICKBOOKS: this.quickBooksProvider,
@@ -187,13 +186,13 @@ export class AccountingService {
     };
 
     if (!options?.syncType || options.syncType === 'invoices') {
-      await this.accountingQueue.add(JOB_ACCOUNTING_SYNC_INVOICES, jobData, jobOpts);
+      await this.dispatcher.dispatch(QUEUE_ACCOUNTING, JOB_ACCOUNTING_SYNC_INVOICES, jobData, jobOpts);
     }
     if (!options?.syncType || options.syncType === 'payments') {
-      await this.accountingQueue.add(JOB_ACCOUNTING_SYNC_PAYMENTS, jobData, jobOpts);
+      await this.dispatcher.dispatch(QUEUE_ACCOUNTING, JOB_ACCOUNTING_SYNC_PAYMENTS, jobData, jobOpts);
     }
     if (!options?.syncType || options.syncType === 'clients') {
-      await this.accountingQueue.add(JOB_ACCOUNTING_SYNC_CLIENTS, jobData, jobOpts);
+      await this.dispatcher.dispatch(QUEUE_ACCOUNTING, JOB_ACCOUNTING_SYNC_CLIENTS, jobData, jobOpts);
     }
 
     this.logger.log(
@@ -330,7 +329,8 @@ export class AccountingService {
       invoiceId,
     };
 
-    await this.accountingQueue.add(
+    await this.dispatcher.dispatch(
+      QUEUE_ACCOUNTING,
       JOB_ACCOUNTING_SYNC_SINGLE_INVOICE,
       jobData,
       {

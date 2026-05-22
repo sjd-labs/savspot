@@ -25,9 +25,10 @@ function makePrisma() {
   };
 }
 
-function makeQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn().mockResolvedValue(undefined),
+    dispatch: vi.fn().mockResolvedValue(undefined),
+    dispatchBulk: vi.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -41,7 +42,7 @@ describe('InvoicesService', () => {
 
   beforeEach(() => {
     prisma = makePrisma();
-    service = new InvoicesService(prisma as never, makeQueue() as never);
+    service = new InvoicesService(prisma as never, makeDispatcher() as never);
   });
 
   // -----------------------------------------------------------------------

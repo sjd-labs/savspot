@@ -5,12 +5,11 @@ import {
   ConflictException,
   Logger,
 } from '@nestjs/common';
-import { InjectQueue } from '@nestjs/bullmq';
-import { Queue } from 'bullmq';
 import { Prisma } from '../../../../prisma/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
 import { AvailabilityService } from '../availability/availability.service';
+import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import {
   QUEUE_GDPR,
   JOB_PROCESS_DATA_EXPORT,
@@ -40,7 +39,7 @@ export class ClientPortalService {
     private readonly prisma: PrismaService,
     private readonly paymentsService: PaymentsService,
     private readonly availabilityService: AvailabilityService,
-    @InjectQueue(QUEUE_GDPR) private readonly gdprQueue: Queue,
+    private readonly dispatcher: JobDispatcher,
   ) {}
 
   /**
@@ -651,7 +650,8 @@ export class ClientPortalService {
     this.logger.log(`Data export requested by user ${userId}: ${dataRequest.id}`);
 
     // Enqueue background job to process the export
-    await this.gdprQueue.add(
+    await this.dispatcher.dispatch(
+      QUEUE_GDPR,
       JOB_PROCESS_DATA_EXPORT,
       { dataRequestId: dataRequest.id, userId },
       { removeOnComplete: { count: 10 }, removeOnFail: { count: 50 } },

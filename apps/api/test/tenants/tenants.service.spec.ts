@@ -66,9 +66,10 @@ function makeSlugService() {
   };
 }
 
-function makeGdprQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn(),
+    dispatch: vi.fn().mockResolvedValue(undefined),
+    dispatchBulk: vi.fn().mockResolvedValue(undefined),
   };
 }
 
@@ -94,16 +95,16 @@ describe('TenantsService', () => {
   let service: TenantsService;
   let prisma: ReturnType<typeof makePrisma>;
   let slugService: ReturnType<typeof makeSlugService>;
-  let gdprQueue: ReturnType<typeof makeGdprQueue>;
+  let dispatcher: ReturnType<typeof makeDispatcher>;
 
   beforeEach(() => {
     prisma = makePrisma();
     slugService = makeSlugService();
-    gdprQueue = makeGdprQueue();
+    dispatcher = makeDispatcher();
     service = new TenantsService(
       prisma as never,
       slugService as never,
-      gdprQueue as never,
+      dispatcher as never,
     );
   });
 
@@ -195,7 +196,8 @@ describe('TenantsService', () => {
       const result = await service.requestExport(TENANT_ID, USER_ID);
 
       expect(result.id).toBe('dr-001');
-      expect(gdprQueue.add).toHaveBeenCalledWith(
+      expect(dispatcher.dispatch).toHaveBeenCalledWith(
+        'gdpr',
         'processDataExportRequest',
         expect.objectContaining({ tenantId: TENANT_ID }),
         expect.any(Object),
@@ -223,7 +225,7 @@ describe('TenantsService', () => {
 
       expect(result.status).toBe('DEACTIVATED');
       expect(result.exportRequestId).toBe('dr-001');
-      expect(gdprQueue.add).toHaveBeenCalledTimes(2); // export + deletion
+      expect(dispatcher.dispatch).toHaveBeenCalledTimes(2); // export + deletion
     });
 
     it('throws ConflictException when tenant already deactivated', async () => {
@@ -251,11 +253,11 @@ describe('TenantsService', () => {
 
       await service.deactivate(TENANT_ID, USER_ID);
 
-      const deletionCall = gdprQueue.add.mock.calls.find(
-        (call: unknown[]) => call[0] === 'processAccountDeletion',
+      const deletionCall = dispatcher.dispatch.mock.calls.find(
+        (call: unknown[]) => call[1] === 'processAccountDeletion',
       );
       expect(deletionCall).toBeDefined();
-      const opts = deletionCall![2] as { delay: number };
+      const opts = deletionCall![3] as { delay: number };
       expect(opts.delay).toBe(30 * 24 * 60 * 60 * 1000);
     });
   });

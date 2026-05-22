@@ -25,7 +25,6 @@ import { ComputeNoShowRiskHandler } from './compute-no-show-risk.processor';
 import { ComputeClientInsightsHandler } from './compute-client-insights.processor';
 import { ComputeDemandAnalysisHandler } from './compute-demand-analysis.processor';
 import { ComputeBenchmarksHandler } from './compute-benchmarks.processor';
-import { JobSchedulerService } from './job-scheduler.service';
 
 /**
  * Module that exposes the handler classes formerly invoked by per-queue
@@ -45,7 +44,6 @@ import { JobSchedulerService } from './job-scheduler.service';
     UploadModule,
   ],
   providers: [
-    JobSchedulerService,
     // Bookings handlers
     ExpireReservationsHandler,
     AbandonedRecoveryHandler,

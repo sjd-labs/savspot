@@ -136,23 +136,23 @@ function makePrisma() {
 // Suite
 // ---------------------------------------------------------------------------
 
-function makeQueue() {
+function makeDispatcher() {
   return {
-    add: vi.fn().mockResolvedValue({}),
+    dispatch: vi.fn().mockResolvedValue(undefined),
   };
 }
 
 describe('ClientPortalService', () => {
   let service: ClientPortalService;
   let prisma: ReturnType<typeof makePrisma>;
-  let queue: ReturnType<typeof makeQueue>;
+  let dispatcher: ReturnType<typeof makeDispatcher>;
 
   beforeEach(() => {
     prisma = makePrisma();
-    queue = makeQueue();
+    dispatcher = makeDispatcher();
     const mockPaymentsService = { processRefund: vi.fn().mockResolvedValue({}) };
     const mockAvailabilityService = { getAvailableSlots: vi.fn().mockResolvedValue([]) };
-    service = new ClientPortalService(prisma as never, mockPaymentsService as never, mockAvailabilityService as never, queue as never);
+    service = new ClientPortalService(prisma as never, mockPaymentsService as never, mockAvailabilityService as never, dispatcher as never);
   });
 
   // -----------------------------------------------------------------------
