@@ -4,7 +4,7 @@
 // All operations use upsert keyed on deterministic IDs for idempotency.
 // =============================================================================
 
-import type { PrismaClient } from '../generated/prisma/index.js';
+import type { PrismaClient } from '../../apps/api/src/generated/prisma/index.js';
 import {
   DEMO_TENANT_ID,
   DEMO_OWNER_ID,

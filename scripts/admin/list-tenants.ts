@@ -4,7 +4,7 @@
 // Usage: tsx scripts/admin/list-tenants.ts [--status ACTIVE|SUSPENDED] [--limit 50]
 // =============================================================================
 
-import { TenantStatus } from '../../prisma/generated/prisma/index.js';
+import { TenantStatus } from '../../apps/api/src/generated/prisma/index.js';
 import {
   getPrisma,
   parseArgs,

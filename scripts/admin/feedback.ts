@@ -4,7 +4,7 @@
 // Usage: tsx scripts/admin/feedback.ts [options]
 // =============================================================================
 
-import { FeedbackType, FeedbackStatus } from '../../prisma/generated/prisma/index.js';
+import { FeedbackType, FeedbackStatus } from '../../apps/api/src/generated/prisma/index.js';
 import {
   getPrisma,
   parseArgs,

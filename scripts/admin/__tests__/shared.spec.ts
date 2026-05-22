@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock the Prisma import before importing _shared
-vi.mock('../../../prisma/generated/prisma/index.js', () => ({
+vi.mock('../../../apps/api/src/generated/prisma/index.js', () => ({
   PrismaClient: vi.fn(),
 }));
 

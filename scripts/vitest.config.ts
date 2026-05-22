@@ -11,7 +11,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '../../prisma/generated/prisma/index.js': path.resolve(
+      '../../apps/api/src/generated/prisma/index.js': path.resolve(
         __dirname,
         '__mocks__/prisma-generated.ts',
       ),

@@ -2,7 +2,7 @@
 // Seed: Availability Rules
 // =============================================================================
 
-import type { PrismaClient } from '../generated/prisma/index.js';
+import type { PrismaClient } from '../../apps/api/src/generated/prisma/index.js';
 import {
   TENANT_A_ID,
   TENANT_B_ID,

@@ -2,7 +2,7 @@
 // SavSpot Platform Admin — Shared Utilities
 // =============================================================================
 
-import { PrismaClient } from '../../prisma/generated/prisma/index.js';
+import { PrismaClient } from '../../apps/api/src/generated/prisma/index.js';
 
 // ---------------------------------------------------------------------------
 // Prisma Client (singleton)

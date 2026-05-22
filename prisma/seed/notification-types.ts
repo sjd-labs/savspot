@@ -2,7 +2,7 @@
 // Seed: NotificationType
 // =============================================================================
 
-import type { PrismaClient } from '../generated/prisma/index.js';
+import type { PrismaClient } from '../../apps/api/src/generated/prisma/index.js';
 
 export async function seedNotificationTypes(prisma: PrismaClient): Promise<void> {
   const notificationTypes = [

@@ -4,7 +4,7 @@
 // Run with: npx tsx prisma/seed/index.ts
 // =============================================================================
 
-import { PrismaClient } from '../generated/prisma/index.js';
+import { PrismaClient } from '../../apps/api/src/generated/prisma/index.js';
 import { seedUsers } from './users.js';
 import { seedTenants } from './tenants.js';
 import { seedServices } from './services.js';

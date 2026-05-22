@@ -4,7 +4,7 @@
 // Usage: tsx scripts/admin/manage-roles.ts [grant|revoke|list] [--email user@example.com] [--role PLATFORM_ADMIN]
 // =============================================================================
 
-import { PlatformRole } from '../../prisma/generated/prisma/index.js';
+import { PlatformRole } from '../../apps/api/src/generated/prisma/index.js';
 import {
   getPrisma,
   parseArgs,
