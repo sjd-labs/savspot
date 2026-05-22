@@ -31,6 +31,12 @@ cd "$REPO_ROOT"
 echo "→ Installing workspace deps (frozen lockfile)..."
 pnpm install --frozen-lockfile
 
+# Prisma client is gitignored, so on a clean CI checkout `src/generated/prisma`
+# doesn't exist yet — `nest build` then fails to resolve `@/generated/prisma`
+# (1200+ TS2307 errors). Generate first.
+echo "→ Generating Prisma client..."
+pnpm db:generate
+
 echo "→ Building @savspot/api (turbo)..."
 pnpm --filter @savspot/api... build
 
