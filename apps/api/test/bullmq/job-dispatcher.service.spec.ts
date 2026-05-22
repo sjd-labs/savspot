@@ -1,20 +1,22 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { JobDispatcher } from '@/bullmq/job-dispatcher.service';
 import { QUEUE_PAYMENTS, QUEUE_GDPR } from '@/bullmq/queue.constants';
-
-function makeInngest() {
-  return {
-    send: vi.fn().mockResolvedValue({ ids: ['evt-1'] }),
-  };
-}
+import { inngest } from '@/inngest/inngest.client';
 
 describe('JobDispatcher', () => {
-  let inngest: ReturnType<typeof makeInngest>;
+  // JobDispatcher imports the inngest singleton at module load time;
+  // we spy on `send` per test rather than constructor-inject a mock.
+  // Typed loose because Inngest's send() is a heavily-overloaded generic
+  // that vi.spyOn can't infer cleanly.
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let send: any;
   let dispatcher: JobDispatcher;
 
   beforeEach(() => {
-    inngest = makeInngest();
-    dispatcher = new JobDispatcher(inngest as never);
+    send = vi
+      .spyOn(inngest, 'send')
+      .mockResolvedValue({ ids: ['evt-1'] } as never);
+    dispatcher = new JobDispatcher();
   });
 
   describe('dispatch', () => {
@@ -23,8 +25,8 @@ describe('JobDispatcher', () => {
         paymentId: 'p-1',
       });
 
-      expect(inngest.send).toHaveBeenCalledTimes(1);
-      expect(inngest.send).toHaveBeenCalledWith({
+      expect(send).toHaveBeenCalledTimes(1);
+      expect(send).toHaveBeenCalledWith({
         name: 'payments/processRefund',
         data: { paymentId: 'p-1' },
       });
@@ -40,8 +42,8 @@ describe('JobDispatcher', () => {
       );
       const after = Date.now();
 
-      expect(inngest.send).toHaveBeenCalledTimes(1);
-      const event = inngest.send.mock.calls[0]![0] as { name: string; data: unknown; ts: number };
+      expect(send).toHaveBeenCalledTimes(1);
+      const event = send.mock.calls[0]![0] as { name: string; data: unknown; ts: number };
       expect(event.name).toBe('gdpr/cleanupRetention');
       expect(event.data).toEqual({ tenantId: 't-1' });
       expect(event.ts).toBeGreaterThanOrEqual(before + 60_000);
@@ -62,7 +64,7 @@ describe('JobDispatcher', () => {
         },
       );
 
-      const event = inngest.send.mock.calls[0]![0] as { name: string; data: unknown; ts?: number };
+      const event = send.mock.calls[0]![0] as { name: string; data: unknown; ts?: number };
       expect(event.name).toBe('payments/retryFailedPayments');
       expect(event.data).toEqual({ batch: 1 });
       expect(event.ts).toBeUndefined();
@@ -77,8 +79,8 @@ describe('JobDispatcher', () => {
         { name: 'cleanupRetention', data: { tenantId: 't-3' } },
       ]);
 
-      expect(inngest.send).toHaveBeenCalledTimes(1);
-      const events = inngest.send.mock.calls[0]![0] as Array<{ name: string; data: unknown }>;
+      expect(send).toHaveBeenCalledTimes(1);
+      const events = send.mock.calls[0]![0] as Array<{ name: string; data: unknown }>;
       expect(events).toHaveLength(3);
       expect(events.map((e) => e.data)).toEqual([
         { tenantId: 't-1' },

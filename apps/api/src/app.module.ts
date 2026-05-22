@@ -26,6 +26,7 @@ import { CalendarModule } from './calendar/calendar.module';
 import { SmsModule } from './sms/sms.module';
 import { JobsModule } from './jobs/jobs.module';
 import { InngestModule } from './inngest/inngest.module';
+import { JobDispatcherModule } from './bullmq/job-dispatcher.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { BrowserPushModule } from './browser-push/browser-push.module';
 import { ClientPortalModule } from './client-portal/client-portal.module';
@@ -158,6 +159,7 @@ function getEeModules(): any[] {
     CommunicationsModule,
     CalendarModule,
     SmsModule,
+    JobDispatcherModule,
     JobsModule,
     InngestModule,
     NotificationsModule,

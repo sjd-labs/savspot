@@ -14,7 +14,6 @@ import { PlatformMetricsModule } from '../platform-metrics/platform-metrics.modu
 import { SmsModule } from '../sms/sms.module';
 import { VoiceModule } from '../voice/voice.module';
 import { WorkflowsModule } from '../workflows/workflows.module';
-import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import { InngestController } from './inngest.controller';
 import { inngest } from './inngest.client';
 
@@ -60,10 +59,7 @@ export const INNGEST_CLIENT = 'INNGEST_CLIENT';
       provide: INNGEST_CLIENT,
       useValue: inngest,
     },
-    // JobDispatcher used to live in BullMqModule. It's the global
-    // dispatcher that producer code calls; it now wraps inngest.send().
-    JobDispatcher,
   ],
-  exports: [INNGEST_CLIENT, JobDispatcher],
+  exports: [INNGEST_CLIENT],
 })
 export class InngestModule {}

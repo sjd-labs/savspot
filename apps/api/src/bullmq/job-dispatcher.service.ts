@@ -1,6 +1,5 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import type { Inngest } from 'inngest';
-import { INNGEST_CLIENT } from '../inngest/inngest.module';
+import { Injectable, Logger } from '@nestjs/common';
+import { inngest } from '../inngest/inngest.client';
 
 /**
  * Inngest job options (subset of the old BullMQ JobsOptions surface that the
@@ -36,7 +35,13 @@ export interface DispatchOptions {
 export class JobDispatcher {
   private readonly logger = new Logger(JobDispatcher.name);
 
-  constructor(@Inject(INNGEST_CLIENT) private readonly inngestClient: Inngest) {}
+  /**
+   * The Inngest client is imported as a module-level singleton rather than
+   * injected, so the dispatcher can live in its own module without creating
+   * a circular dependency between InngestModule and the many feature modules
+   * that need the dispatcher.
+   */
+  private readonly inngestClient = inngest;
 
   async dispatch<TPayload extends object>(
     queueName: string,
