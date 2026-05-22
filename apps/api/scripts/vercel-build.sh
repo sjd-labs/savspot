@@ -51,10 +51,53 @@ echo "→ Swapping apps/api/node_modules with the dereferenced flat tree..."
 rm -rf "$API_DIR/node_modules"
 cp -rL "$DEPLOY_DIR/node_modules" "$API_DIR/node_modules"
 
+# Stub src/main.ts so Vercel's NestJS framework preset compiles a *tiny*
+# phantom function instead of the real one. Background:
+#
+#  - Vercel's `framework: "nestjs"` preset auto-discovers src/main.ts and
+#    spins up its own function from it (in addition to our explicit
+#    `api/index.js`). The phantom is never invoked — vercel.json rewrites
+#    send all traffic to /api/index — but it is still built.
+#  - The phantom's TypeScript compile traverses the import graph from
+#    src/main.ts → src/configure-app.ts → … and chokes after
+#    `pnpm deploy --prod` strips devDep type packages
+#    (@types/cookie-parser, @scalar/nestjs-api-reference).
+#  - The preset insists the entrypoint must import `@nestjs/core`, so we
+#    can't just leave src/main.ts empty.
+#
+# Replacing src/main.ts with a minimal stub that imports `@nestjs/core`
+# (a prod dep, so it survives `pnpm deploy --prod`) gives the preset
+# exactly what it needs and stops the graph traversal — phantom shrinks
+# from ~8.7 MB to ~24 KB and the build no longer needs devDep types.
+#
+# We back up the original first; a trap restores it on any exit so a dev
+# running this script locally never loses their entrypoint.
+echo "→ Stubbing src/main.ts so Vercel's NestJS preset doesn't drag in devDep types..."
+MAIN_BACKUP="$(mktemp -d)/main.ts"
+cp "$API_DIR/src/main.ts" "$MAIN_BACKUP"
+cat > "$API_DIR/src/main.ts" <<'STUB'
+// Stub installed by scripts/vercel-build.sh. The real main.ts is restored
+// immediately after `vercel build` completes. See the comment in the build
+// script for the full rationale.
+import { NestFactory } from '@nestjs/core';
+void NestFactory;
+export {};
+STUB
+
+restore_main() {
+  if [ -f "$MAIN_BACKUP" ]; then
+    cp "$MAIN_BACKUP" "$API_DIR/src/main.ts"
+  fi
+}
+trap restore_main EXIT INT TERM
+
 echo "→ Running vercel build (--prod) ..."
 cd "$API_DIR"
 rm -rf .vercel/output
 vercel build --prod ${VERCEL_TOKEN:+--token="$VERCEL_TOKEN"}
+
+restore_main
+trap - EXIT INT TERM
 
 # NFT silently drops the rhel-openssl-3.0.x.so.node Prisma query-engine
 # binary even though `includeFiles` lists dist/**. Copy it back in.
