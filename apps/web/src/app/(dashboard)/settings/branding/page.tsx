@@ -16,6 +16,7 @@ import {
   X,
 } from 'lucide-react';
 import { Button, Card, CardContent, CardDescription, CardHeader, CardTitle, Input, Label, Textarea, Separator, Skeleton } from '@savspot/ui';
+import { BUSINESS_CATEGORY_LABELS } from '@savspot/shared';
 import { apiClient } from '@/lib/api-client';
 import { ROUTES } from '@/lib/constants';
 import { useTenant } from '@/hooks/use-tenant';
@@ -35,14 +36,7 @@ interface TenantBranding {
   categoryLabel: string | null;
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  VENUE: 'Venue / Event Space',
-  SALON: 'Salon / Barbershop',
-  STUDIO: 'Studio',
-  FITNESS: 'Fitness / Wellness',
-  PROFESSIONAL: 'Professional Services',
-  OTHER: 'Other',
-};
+const CATEGORY_LABELS: Record<string, string> = BUSINESS_CATEGORY_LABELS;
 
 interface PresignedUrlResponse {
   url: string;

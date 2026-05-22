@@ -1,5 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@/generated/prisma';
+import { BUSINESS_CATEGORY_OPTIONS } from '@savspot/shared';
 import { PrismaService } from '../prisma/prisma.service';
 import { SearchDirectoryDto } from './dto/search-directory.dto';
 import { clampPageSize } from '../common/utils/pagination';
@@ -173,6 +174,18 @@ export class DirectoryService {
       ORDER BY business_count DESC
     `;
     return categories;
+  }
+
+  /**
+   * Static list of every supported category with its public-facing label and
+   * description. Unlike `getCategories()` this is *not* tenant-count-aware
+   * and never empty — it's what the directory homepage filter and the
+   * tenant-onboarding category picker bind to. Keep `getCategories()` for
+   * "popular categories with a meaningful population behind them" (subject
+   * to the privacy floor).
+   */
+  getCategoryOptions(): typeof BUSINESS_CATEGORY_OPTIONS {
+    return BUSINESS_CATEGORY_OPTIONS;
   }
 
   async getBusinessBySlug(slug: string) {

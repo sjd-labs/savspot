@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Mail, Phone, ShieldCheck, CalendarX2, Star, Info } from 'lucide-react';
-import { DEMO_TENANT_SLUG } from '@savspot/shared';
+import { BUSINESS_CATEGORY_LABELS, DEMO_TENANT_SLUG } from '@savspot/shared';
 import { Badge } from '@savspot/ui';
 import type { TenantData } from '@/components/booking/booking-types';
 import { buildJsonLd } from './helpers';
@@ -15,14 +15,7 @@ const SITE_URL = process.env['NEXT_PUBLIC_URL'] || 'http://localhost:3000';
 // Helpers
 // ---------------------------------------------------------------------------
 
-const CATEGORY_LABELS: Record<string, string> = {
-  VENUE: 'Venue / Event Space',
-  SALON: 'Salon / Barbershop',
-  STUDIO: 'Studio',
-  FITNESS: 'Fitness / Wellness',
-  PROFESSIONAL: 'Professional Services',
-  OTHER: 'Other',
-};
+const CATEGORY_LABELS: Record<string, string> = BUSINESS_CATEGORY_LABELS;
 
 // ---------------------------------------------------------------------------
 // Hero section (server-rendered, no interactivity)

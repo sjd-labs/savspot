@@ -24,10 +24,26 @@ export class DirectoryController {
 
   @Get('categories')
   @Public()
-  @ApiOperation({ summary: 'List business categories with counts' })
-  @ApiResponse({ status: 200, description: 'List of categories' })
+  @ApiOperation({
+    summary: 'List business categories that have ≥ privacy-floor live tenants',
+    description:
+      'Returns only categories with enough published tenants to avoid identifying individual businesses. Empty in early-platform conditions — use /category-options for the static enum list.',
+  })
+  @ApiResponse({ status: 200, description: 'List of populated categories with counts' })
   async getCategories() {
     return this.directoryService.getCategories();
+  }
+
+  @Get('category-options')
+  @Public()
+  @ApiOperation({
+    summary: 'List every supported business category with label + description',
+    description:
+      'Static, always non-empty. Bind directory filter dropdowns, tenant-onboarding category pickers, and SEO landing pages to this.',
+  })
+  @ApiResponse({ status: 200, description: 'All BusinessCategory enum values with display copy' })
+  getCategoryOptions() {
+    return this.directoryService.getCategoryOptions();
   }
 
   @Get('businesses/:slug')
