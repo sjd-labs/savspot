@@ -23,3 +23,4 @@ Each ADR follows the [Michael Nygard template](https://cognitect.com/blog/2011/1
 | [0006](0006-bullmq-tenant-in-job-payload.md) | BullMQ workers: tenant ID in job payload | Accepted |
 | [0007](0007-stripe-connect-destination-charges.md) | Stripe Connect with destination charges | Accepted |
 | [0008](0008-prisma-raw-queries-for-slot-locking.md) | Prisma raw queries for slot locking | Accepted |
+| [0009](0009-supabase-auth-migration-plan.md) | Frontend Supabase token issuance and RS256 retirement | Accepted (planning) |
