@@ -83,15 +83,20 @@ export default function PrivacyPage() {
           <h2>3. Who we are and how to contact us</h2>
           <p>
             The data controller for personal information collected through the
-            Service is <strong>SJD Labs, LLC</strong> (California). Privacy
-            requests (access, correction, deletion, opt-out, or complaints)
-            should go to{' '}
+            Service is <strong>SJD Labs, LLC</strong>, a California limited
+            liability company. Privacy requests (access, correction,
+            deletion, opt-out, or complaints) should go to{' '}
             <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. General
             support is at{' '}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. We will
-            provide a mailing address on written request to{' '}
-            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>.
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. Postal
+            mail:
           </p>
+          <address className="not-italic">
+            SJD Labs, LLC<br />
+            4653 Carmel Mountain Rd, Ste 308 #AA229<br />
+            San Diego, CA 92130<br />
+            United States
+          </address>
 
           <h2>4. Information we collect</h2>
 
@@ -675,10 +680,13 @@ export default function PrivacyPage() {
             <br />
             General support:{' '}
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            <br />
-            Mailing address available on written request to{' '}
-            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>.
           </p>
+          <address className="not-italic">
+            SJD Labs, LLC<br />
+            4653 Carmel Mountain Rd, Ste 308 #AA229<br />
+            San Diego, CA 92130<br />
+            United States
+          </address>
         </section>
       </main>
 

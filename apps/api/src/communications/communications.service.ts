@@ -665,7 +665,8 @@ export class CommunicationsService {
             <td style="padding:16px 32px;background:#f5f5f5;text-align:center;font-size:12px;color:#888;">
               <p style="margin:0;">Sent via <a href="https://savspot.co" style="color:${accentColor};text-decoration:none;">SavSpot</a></p>
               <p style="margin:4px 0 0;">&copy; ${new Date().getFullYear()} ${this.esc(branding.businessName)}. All rights reserved.</p>${unsubscribeUrl ? `
-              <p style="margin:8px 0 0;"><a href="${this.esc(unsubscribeUrl)}" style="color:#888;text-decoration:underline;">Unsubscribe</a> from marketing emails</p>` : ''}
+              <p style="margin:8px 0 0;"><a href="${this.esc(unsubscribeUrl)}" style="color:#888;text-decoration:underline;">Unsubscribe</a> from marketing emails</p>
+              <p style="margin:8px 0 0;font-size:11px;color:#999;">SavSpot is a service of SJD Labs, LLC &middot; 4653 Carmel Mountain Rd, Ste 308 #AA229, San Diego, CA 92130, USA</p>` : ''}
             </td>
           </tr>
         </table>

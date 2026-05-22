@@ -478,7 +478,7 @@ export default function TermsPage() {
               Association (AAA) under its Commercial Arbitration Rules and
               Consumer Arbitration Rules where applicable. The arbitration
               will be governed by the Federal Arbitration Act (9 U.S.C.
-              §§1&ndash;16) and seated in Los Angeles County, California,
+              §§1&ndash;16) and seated in San Diego County, California,
               or, where permitted, conducted by video conference. Judgment
               on the award may be entered in any court of competent
               jurisdiction.
@@ -496,7 +496,7 @@ export default function TermsPage() {
             </strong>{' '}
             If this waiver is held unenforceable as to any claim, that
             claim will be litigated in the state and federal courts
-            located in Los Angeles County, California, but the remainder
+            located in San Diego County, California, but the remainder
             of this arbitration agreement will remain in effect.
           </p>
 
@@ -525,7 +525,7 @@ export default function TermsPage() {
           <p>
             These Terms are governed by the laws of the State of California,
             without regard to its conflict-of-laws principles. Subject to
-            Section 19, the state and federal courts located in Los Angeles
+            Section 19, the state and federal courts located in San Diego
             County, California, have exclusive jurisdiction over any matter
             not subject to arbitration, and you consent to personal
             jurisdiction and venue there. The United Nations Convention on
@@ -574,10 +574,16 @@ export default function TermsPage() {
             We may send notices to you via the email associated with your
             account or by posting in the Service. You must send legal
             notices to{' '}
-            <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>. A mailing
-            address for certified mail is available on written request to
-            the same address.
+            <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>, with a
+            duplicate copy by certified mail to:
           </p>
+          <address className="not-italic">
+            SJD Labs, LLC<br />
+            Attn: Legal<br />
+            4653 Carmel Mountain Rd, Ste 308 #AA229<br />
+            San Diego, CA 92130<br />
+            United States
+          </address>
 
           <h2>25. Assignment</h2>
           <p>
@@ -617,11 +623,13 @@ export default function TermsPage() {
             <br />
             General support:{' '}
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
-            <br />
-            SJD Labs, LLC &mdash; California, USA. Mailing address available
-            on written request to{' '}
-            <a href={`mailto:${LEGAL_EMAIL}`}>{LEGAL_EMAIL}</a>.
           </p>
+          <address className="not-italic">
+            SJD Labs, LLC<br />
+            4653 Carmel Mountain Rd, Ste 308 #AA229<br />
+            San Diego, CA 92130<br />
+            United States
+          </address>
         </section>
       </main>
 
