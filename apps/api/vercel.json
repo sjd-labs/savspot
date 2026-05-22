@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "cd ../.. && pnpm turbo build --filter=@savspot/api...",
-  "installCommand": "cd ../.. && pnpm install --filter=@savspot/api... --frozen-lockfile",
+  "installCommand": "cd ../.. && NODE_OPTIONS='--max-old-space-size=6144' pnpm install --filter=@savspot/api... --frozen-lockfile --child-concurrency=2 --prefer-offline",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }
   ],
