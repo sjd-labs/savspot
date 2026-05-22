@@ -33,7 +33,8 @@
     "admin:import-services": "tsx scripts/admin/import-services.ts",
     "admin:import-appointments": "tsx scripts/admin/import-appointments.ts",
     "admin:feedback": "tsx scripts/admin/feedback.ts",
-    "admin:reset-demo": "tsx scripts/admin/reset-demo.ts"
+    "admin:reset-demo": "tsx scripts/admin/reset-demo.ts",
+    "admin:backfill-supabase-users": "tsx scripts/admin/backfill-supabase-users.ts"
   },
   "pnpm": {
     "onlyBuiltDependencies": ["@parcel/watcher", "@sentry/cli", "@swc/core"],
