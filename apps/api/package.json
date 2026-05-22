@@ -43,7 +43,7 @@
     "google-auth-library": "^10.6.2",
     "helmet": "^8.1.0",
     "inngest": "^3.27.0",
-    "jose": "^6.2.3",
+    "jose": "^5.10.0",
     "jsonwebtoken": "^9.0.3",
     "nestjs-cls": "^6.2.0",
     "nestjs-pino": "^4.6.0",
