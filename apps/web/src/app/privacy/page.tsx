@@ -27,25 +27,13 @@ export default function PrivacyPage() {
           Effective date: {EFFECTIVE_DATE}
         </p>
 
-        <aside
-          className="mt-6 rounded-md border border-amber-500/50 bg-amber-500/10 p-4 text-sm"
-          role="note"
-        >
-          <strong className="font-semibold">Template notice.</strong> This
-          document is a starting-point template that reflects the platform&rsquo;s
-          actual data practices but is not legal advice. Have it reviewed by
-          qualified counsel admitted in your jurisdiction before relying on it
-          and update the placeholders for legal-entity name and governing law to
-          match your business.
-        </aside>
-
         <section className="prose prose-neutral dark:prose-invert mt-8 max-w-none">
           <h2>1. Introduction</h2>
           <p>
             This Privacy Policy explains how <strong>SavSpot</strong>{' '}
             (&ldquo;SavSpot,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
-            &ldquo;our&rdquo;), operated by{' '}
-            <strong>[Your Legal Entity Name]</strong>, collects, uses, discloses,
+            &ldquo;our&rdquo;), operated by <strong>SJD Labs, LLC</strong>, a
+            California limited liability company, collects, uses, discloses,
             and protects personal information when you visit{' '}
             <code>www.savspot.co</code>, create an account, use the SavSpot
             booking platform, or otherwise interact with our services
@@ -75,28 +63,34 @@ export default function PrivacyPage() {
               We use sub-processors for payments (Stripe), email (Resend), SMS
               (Twilio), authentication and database (Supabase), hosting
               (Vercel), error reporting (Sentry), and product analytics
-              (PostHog). We don&rsquo;t sell personal information.
+              (PostHog). We do not sell or share personal information.
             </li>
             <li>
               You can access, correct, export, or delete your personal
-              information &mdash; see Section 11.
+              information &mdash; see Sections 11 and 12.
             </li>
             <li>
               When a Tenant uses SavSpot to serve their Clients, the Tenant is
               the controller of that Client data and we are a processor acting
               on the Tenant&rsquo;s instructions.
             </li>
+            <li>
+              California residents have additional rights under the CCPA / CPRA
+              &mdash; see Section 12.
+            </li>
           </ul>
 
           <h2>3. Who we are and how to contact us</h2>
           <p>
             The data controller for personal information collected through the
-            Service is <strong>[Your Legal Entity Name]</strong>,{' '}
-            <strong>[Your Registered Address]</strong>. Privacy-related requests
-            (access, correction, deletion, opt-out, or complaints) should go to{' '}
+            Service is <strong>SJD Labs, LLC</strong> (California). Privacy
+            requests (access, correction, deletion, opt-out, or complaints)
+            should go to{' '}
             <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. General
             support is at{' '}
-            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>. We will
+            provide a mailing address on written request to{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>.
           </p>
 
           <h2>4. Information we collect</h2>
@@ -320,11 +314,14 @@ export default function PrivacyPage() {
           <h3>7.5 What we don&rsquo;t do</h3>
           <p>
             We do not sell personal information for monetary consideration. We
-            do not share information with advertisers for cross-context
-            behavioral advertising. We do not engage in &ldquo;sale&rdquo; or
+            do not share personal information for cross-context behavioral
+            advertising. We do not engage in &ldquo;sale&rdquo; or
             &ldquo;sharing&rdquo; of personal information as those terms are
-            defined under the California Consumer Privacy Act (CCPA) as
-            amended by the CPRA.
+            defined under the California Consumer Privacy Act of 2018, as
+            amended by the California Privacy Rights Act (collectively,
+            &ldquo;CCPA&rdquo;). We do not process Sensitive Personal
+            Information (as defined under the CCPA) for the purpose of
+            inferring characteristics about a consumer.
           </p>
 
           <h2>8. Cookies and similar technologies</h2>
@@ -346,6 +343,16 @@ export default function PrivacyPage() {
               setting these.
             </li>
           </ul>
+          <p>
+            <strong>Do Not Track and Global Privacy Control.</strong> Browsers
+            and extensions may send a Global Privacy Control (GPC) signal or
+            a Do Not Track (DNT) signal. We treat a recognized GPC signal as
+            a valid request to opt out of any &ldquo;sale&rdquo; or
+            &ldquo;sharing&rdquo; of personal information under the CCPA. We
+            do not currently respond to DNT signals because there is no
+            industry consensus on how to interpret them; we will revisit
+            this if a standard emerges.
+          </p>
           <p>
             You can clear cookies through your browser settings. Doing so will
             log you out and may reset preferences.
@@ -370,7 +377,8 @@ export default function PrivacyPage() {
               The Tenant is the controller for that data, decides how it is
               used, and is responsible for its own privacy notices, lawful
               basis for processing, and responses to data-subject requests.
-              Our Data Processing Addendum (available on request) governs
+              Our Data Processing Addendum (available on request to{' '}
+              <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>) governs
               that relationship.
             </li>
           </ul>
@@ -412,11 +420,10 @@ export default function PrivacyPage() {
             </li>
           </ul>
 
-          <h2>11. Your rights</h2>
+          <h2>11. Your rights (general)</h2>
           <p>
             Depending on where you live, you may have the following rights
-            under laws such as the GDPR, UK GDPR, CCPA/CPRA, and similar
-            state laws:
+            under laws such as the GDPR, UK GDPR, and similar regimes:
           </p>
           <ul>
             <li>
@@ -460,11 +467,143 @@ export default function PrivacyPage() {
             <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. We may
             need to verify your identity. We will respond within the
             timeframes required by applicable law (typically 30&ndash;45
-            days). We may charge a reasonable fee or refuse manifestly
-            unfounded or excessive requests, as permitted by law.
+            days). We may refuse manifestly unfounded or excessive requests,
+            as permitted by law.
           </p>
 
-          <h2>12. International data transfers</h2>
+          <h2>12. Your California privacy rights (CCPA / CPRA)</h2>
+          <p>
+            If you are a California resident, you have the following rights
+            in addition to those in Section 11. These rights apply to
+            personal information we hold about you as a controller; for
+            Client data Tenants enter into the Service, the Tenant is the
+            controller and we will forward verified requests to them.
+          </p>
+
+          <h3>12.1 Categories of personal information collected</h3>
+          <p>
+            In the past 12 months we have collected the following CCPA
+            categories of personal information (Cal. Civ. Code §1798.140):
+          </p>
+          <ul>
+            <li>
+              <strong>Identifiers</strong> &mdash; name, email, phone number,
+              IP address, OAuth provider IDs, account identifiers.
+            </li>
+            <li>
+              <strong>Customer records</strong> &mdash; business address,
+              billing details (last 4 of card via Stripe).
+            </li>
+            <li>
+              <strong>Commercial information</strong> &mdash; subscription
+              tier, booking and transaction history.
+            </li>
+            <li>
+              <strong>Internet or network activity</strong> &mdash; cookies,
+              session logs, page-view events, device and browser metadata.
+            </li>
+            <li>
+              <strong>Geolocation data</strong> &mdash; approximate location
+              derived from IP address. We do not collect precise geolocation.
+            </li>
+            <li>
+              <strong>Inferences</strong> &mdash; we do not generate
+              inferences about consumers for profiling purposes.
+            </li>
+          </ul>
+          <p>
+            We do not collect or process Sensitive Personal Information under
+            the CCPA other than account credentials (password hashes) used to
+            authenticate you to the Service.
+          </p>
+
+          <h3>12.2 Sources and business purposes</h3>
+          <p>
+            Sources of collection are described in Section 4. We use these
+            categories of personal information for the business purposes
+            described in Section 5: providing the Service, billing,
+            transactional communications, security, fraud prevention, legal
+            compliance, and product improvement.
+          </p>
+
+          <h3>12.3 Your California rights</h3>
+          <ul>
+            <li>
+              <strong>Right to know.</strong> Request the categories and
+              specific pieces of personal information we have collected
+              about you, the sources, the business purposes, and the
+              categories of third parties with which we share it.
+            </li>
+            <li>
+              <strong>Right to delete.</strong> Request deletion of personal
+              information we have collected about you, subject to statutory
+              exceptions (for example, transaction records we are required
+              to retain for tax or anti-fraud purposes).
+            </li>
+            <li>
+              <strong>Right to correct.</strong> Request correction of
+              inaccurate personal information.
+            </li>
+            <li>
+              <strong>Right to opt out of sale or sharing.</strong> We do not
+              sell or share personal information as those terms are defined
+              under the CCPA. A recognized Global Privacy Control (GPC)
+              signal is treated as a valid opt-out request.
+            </li>
+            <li>
+              <strong>Right to limit use of Sensitive Personal Information.</strong>{' '}
+              We do not use Sensitive Personal Information for purposes that
+              would require this option, but you may request that we limit
+              such use if our practices change.
+            </li>
+            <li>
+              <strong>Right to non-discrimination.</strong> We will not deny
+              the Service, charge different prices, or provide a different
+              level or quality of the Service because you exercised any
+              CCPA right.
+            </li>
+            <li>
+              <strong>Authorized agent.</strong> You may designate an
+              authorized agent to submit requests on your behalf. We will
+              require written proof of the agent&rsquo;s authority and
+              verification of your identity.
+            </li>
+          </ul>
+
+          <h3>12.4 How to submit a California request</h3>
+          <p>
+            Submit a request by emailing{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a> with the
+            subject &ldquo;CCPA Request&rdquo; and the type of request. We
+            verify requests by matching the request against information we
+            already have on file about your account (typically the email
+            address tied to the account, plus confirmation via that email).
+            We will respond within 45 days; we may extend by an additional
+            45 days for complex requests and will notify you of any
+            extension.
+          </p>
+
+          <h3>12.5 California Shine the Light (Cal. Civ. Code §1798.83)</h3>
+          <p>
+            California residents may request, once per year and free of
+            charge, information about the categories of personal information
+            (if any) we have disclosed to third parties for their direct
+            marketing purposes in the preceding calendar year. SavSpot does
+            not disclose personal information to third parties for their
+            own direct marketing.
+          </p>
+
+          <h3>12.6 California minors (Cal. Bus. &amp; Prof. Code §22581)</h3>
+          <p>
+            Registered users who are California residents under 18 may
+            request removal of content or information they have posted on
+            the Service by emailing{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. Removal
+            may not result in complete or comprehensive removal as
+            described in Section 22581(c).
+          </p>
+
+          <h2>13. International data transfers</h2>
           <p>
             SavSpot infrastructure is primarily hosted in the United States.
             If you access the Service from outside the United States, your
@@ -475,7 +614,7 @@ export default function PrivacyPage() {
             mechanisms with our sub-processors.
           </p>
 
-          <h2>13. Children</h2>
+          <h2>14. Children</h2>
           <p>
             The Service is not directed to children under 16, and we do not
             knowingly collect personal information from children under 16.
@@ -487,7 +626,7 @@ export default function PrivacyPage() {
             will delete it.
           </p>
 
-          <h2>14. Security</h2>
+          <h2>15. Security</h2>
           <p>
             We implement technical and organizational measures designed to
             protect personal information, including: TLS in transit, AES-256
@@ -499,7 +638,7 @@ export default function PrivacyPage() {
             secure; we cannot guarantee absolute security.
           </p>
 
-          <h2>15. Changes to this Policy</h2>
+          <h2>16. Changes to this Policy</h2>
           <p>
             We may update this Privacy Policy from time to time to reflect
             changes in our practices or for other operational, legal, or
@@ -510,7 +649,7 @@ export default function PrivacyPage() {
             updated policy constitutes acceptance of the changes.
           </p>
 
-          <h2>16. Contact</h2>
+          <h2>17. Contact</h2>
           <p>
             Privacy questions or requests:{' '}
             <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
@@ -518,7 +657,8 @@ export default function PrivacyPage() {
             General support:{' '}
             <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
             <br />
-            Postal: [Your Registered Address]
+            Mailing address available on written request to{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>.
           </p>
         </section>
       </main>
