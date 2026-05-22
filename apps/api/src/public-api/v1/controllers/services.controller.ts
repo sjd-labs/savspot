@@ -25,7 +25,7 @@ import { RequiresLicense } from '@savspot/ee';
 @UseInterceptors(ApiVersionInterceptor)
 
 @RequiresLicense()
-@Controller('api/v1')
+@Controller('v1')
 export class ServicesController {
   constructor(private readonly prisma: PrismaService) {}
 

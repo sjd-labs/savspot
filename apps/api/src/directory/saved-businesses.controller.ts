@@ -9,7 +9,7 @@ import { RequiresLicense } from '@savspot/ee';
 @ApiBearerAuth()
 
 @RequiresLicense()
-@Controller('api/saved-businesses')
+@Controller('saved-businesses')
 export class SavedBusinessesController {
   constructor(
     private readonly savedBusinessesService: SavedBusinessesService,

@@ -29,7 +29,7 @@ import { RequiresLicense } from '@savspot/ee';
 @UseInterceptors(ApiVersionInterceptor)
 
 @RequiresLicense()
-@Controller('api/v1/bookings')
+@Controller('v1/bookings')
 export class BookingsController {
   constructor(
     private readonly prisma: PrismaService,

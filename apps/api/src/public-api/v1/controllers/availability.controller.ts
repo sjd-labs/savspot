@@ -25,7 +25,7 @@ import { RequiresLicense } from '@savspot/ee';
 @UseInterceptors(ApiVersionInterceptor)
 
 @RequiresLicense()
-@Controller('api/v1/availability')
+@Controller('v1/availability')
 export class AvailabilityController {
   constructor(private readonly availabilityService: AvailabilityService) {}
 

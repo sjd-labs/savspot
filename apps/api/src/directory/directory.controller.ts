@@ -10,7 +10,7 @@ import { RequiresLicense } from '@savspot/ee';
 @Throttle({ default: { limit: 60, ttl: 60_000 } })
 
 @RequiresLicense()
-@Controller('api/directory')
+@Controller('directory')
 export class DirectoryController {
   constructor(private readonly directoryService: DirectoryService) {}
 

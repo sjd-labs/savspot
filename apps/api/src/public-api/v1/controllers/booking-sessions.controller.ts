@@ -30,7 +30,7 @@ import { RequiresLicense } from '@savspot/ee';
 @UseInterceptors(ApiVersionInterceptor)
 
 @RequiresLicense()
-@Controller('api/v1/booking-sessions')
+@Controller('v1/booking-sessions')
 export class BookingSessionsController {
   constructor(
     private readonly bookingSessionsService: BookingSessionsService,
