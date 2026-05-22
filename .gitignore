@@ -74,3 +74,9 @@ supabase/.temp/
 
 # Misc
 *.tsbuildinfo
+.vercel
+
+# Vercel build orchestration: vercel-build.sh writes a flat prod-only
+# node_modules + dist into /tmp by default, but if VERCEL_BUILD_DEPLOY_DIR
+# points at a repo-local path it lands here. Several GB; never commit.
+vercel-deploy/
