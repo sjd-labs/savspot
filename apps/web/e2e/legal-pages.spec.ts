@@ -7,9 +7,10 @@ test.describe('Legal Pages', () => {
     await page.goto('/privacy');
     await page.waitForLoadState('networkidle');
 
-    // Should display a privacy-related heading
+    // The H1 is unique; the long-form policy also has H2/H3 subheadings
+    // that mention privacy (e.g. "Privacy questions"), so we scope to level 1.
     await expect(
-      page.getByRole('heading', { name: /privacy/i }),
+      page.getByRole('heading', { level: 1, name: /privacy/i }),
     ).toBeVisible();
   });
 
@@ -30,9 +31,11 @@ test.describe('Legal Pages', () => {
     await page.goto('/terms');
     await page.waitForLoadState('networkidle');
 
-    // Should display a terms-related heading
+    // The H1 is unique; the long-form ToS also has H2/H3 subheadings
+    // that mention "Terms" (e.g. "Changes to these Terms"), so we scope
+    // to level 1.
     await expect(
-      page.getByRole('heading', { name: /terms/i }),
+      page.getByRole('heading', { level: 1, name: /terms/i }),
     ).toBeVisible();
   });
 
