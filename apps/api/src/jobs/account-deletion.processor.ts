@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 import { DataRequestType, DataRequestStatus, Prisma } from '@/generated/prisma';
 
@@ -13,7 +14,10 @@ export const JOB_PROCESS_ACCOUNT_DELETION = 'processAccountDeletion';
 export class AccountDeletionHandler {
   private readonly logger = new Logger(AccountDeletionHandler.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async handle(): Promise<void> {
     this.logger.log('Running account deletion processor...');
@@ -58,7 +62,11 @@ export class AccountDeletionHandler {
   }
 
   private async processUserDeletion(userId: string, requestId: string): Promise<void> {
-    const anonymizedEmail = `deleted-${userId.slice(0, 8)}@deleted.savspot.co`;
+    const anonymizedDomain = this.configService.get<string>(
+      'branding.anonymizedEmailDomain',
+      'deleted.savspot.co',
+    );
+    const anonymizedEmail = `deleted-${userId.slice(0, 8)}@${anonymizedDomain}`;
     const anonymizedName = '[deleted]';
 
     // Find all tenants this user belongs to for RLS-scoped operations

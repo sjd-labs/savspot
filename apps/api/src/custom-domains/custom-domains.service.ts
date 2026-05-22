@@ -1,4 +1,5 @@
 import { Injectable, Logger, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { DnsVerifierService } from './dns-verifier.service';
@@ -13,7 +14,13 @@ export class CustomDomainsService {
     private readonly prisma: PrismaService,
     private readonly dnsVerifier: DnsVerifierService,
     private readonly sslManager: SslManagerService,
+    private readonly configService: ConfigService,
   ) {}
+
+  /** CNAME target that custom-domain tenants point their DNS at. */
+  private get cnameTarget(): string {
+    return this.configService.get<string>('branding.customDomainCname', 'custom.savspot.co');
+  }
 
   async addDomain(tenantId: string, domain: string): Promise<DomainResponse> {
     if (process.env['FEATURE_CUSTOM_DOMAINS'] !== 'true') {
@@ -55,7 +62,7 @@ export class CustomDomainsService {
         },
         cname: {
           name: domain,
-          value: 'custom.savspot.co',
+          value: this.cnameTarget,
         },
       },
     };
@@ -76,7 +83,7 @@ export class CustomDomainsService {
         },
         cname: {
           name: domain.domain,
-          value: 'custom.savspot.co',
+          value: this.cnameTarget,
         },
       },
     };

@@ -438,7 +438,10 @@ describe('RLS tenant context in BullMQ job processors', () => {
   describe('AccountDeletionHandler', () => {
     it('should call set_config per tenant in tenant-scoped transactions', async () => {
       const prisma = makePrisma();
-      const handler = new AccountDeletionHandler(prisma as never);
+      const handler = new AccountDeletionHandler(
+        prisma as never,
+        { get: () => 'deleted.savspot.co' } as never,
+      );
 
       prisma.dataRequest.findMany.mockResolvedValue([
         {

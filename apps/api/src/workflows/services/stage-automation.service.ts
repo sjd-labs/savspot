@@ -1,4 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { CommunicationsService } from '../../communications/communications.service';
 import { NotificationsService } from '../../notifications/notifications.service';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -17,6 +18,7 @@ export class StageAutomationService {
     private readonly prisma: PrismaService,
     private readonly communicationsService: CommunicationsService,
     private readonly notificationsService: NotificationsService,
+    private readonly configService: ConfigService,
   ) {}
 
   async executeStage(
@@ -257,9 +259,13 @@ export class StageAutomationService {
       select: { name: true, slug: true, logoUrl: true, brandColor: true },
     });
 
+    const apexDomain = this.configService.get<string>(
+      'branding.apexDomain',
+      'savspot.co',
+    );
     const questionnaireUrl = String(
       config['questionnaireUrl'] ??
-        `https://${tenant.slug}.savspot.co/questionnaire`,
+        `https://${tenant.slug}.${apexDomain}/questionnaire`,
     );
 
     await this.communicationsService.createAndSend({

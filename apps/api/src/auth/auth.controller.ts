@@ -50,7 +50,9 @@ export class AuthController {
 
   private setAuthCookies(res: Response, tokens: { accessToken: string; refreshToken: string }) {
     const isProduction = process.env['NODE_ENV'] === 'production';
-    const cookieDomain = isProduction ? '.savspot.co' : undefined;
+    const cookieDomain = isProduction
+      ? this.configService.get<string>('branding.cookieDomain')
+      : undefined;
 
     res.cookie('savspot_access', tokens.accessToken, {
       httpOnly: true,
@@ -82,7 +84,9 @@ export class AuthController {
 
   private clearAuthCookies(res: Response) {
     const isProduction = process.env['NODE_ENV'] === 'production';
-    const cookieDomain = isProduction ? '.savspot.co' : undefined;
+    const cookieDomain = isProduction
+      ? this.configService.get<string>('branding.cookieDomain')
+      : undefined;
     res.clearCookie('savspot_access', { path: '/', secure: isProduction, sameSite: 'lax', domain: cookieDomain });
     res.clearCookie('savspot_refresh', { path: '/api/auth/refresh', secure: isProduction, sameSite: 'lax', domain: cookieDomain });
     res.clearCookie('savspot_session', { path: '/', secure: isProduction, sameSite: 'lax', domain: cookieDomain });

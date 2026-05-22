@@ -1,12 +1,12 @@
 import { describe, it, expect } from 'vitest';
 import {
-  WALK_IN_EMAIL_DOMAIN,
+  DEFAULT_WALK_IN_EMAIL_DOMAIN,
   getWalkInEmail,
 } from '@/common/constants';
 
-describe('WALK_IN_EMAIL_DOMAIN', () => {
+describe('DEFAULT_WALK_IN_EMAIL_DOMAIN', () => {
   it('equals savspot.co', () => {
-    expect(WALK_IN_EMAIL_DOMAIN).toBe('savspot.co');
+    expect(DEFAULT_WALK_IN_EMAIL_DOMAIN).toBe('savspot.co');
   });
 });
 
@@ -30,8 +30,13 @@ describe('getWalkInEmail', () => {
     );
   });
 
-  it('always uses the WALK_IN_EMAIL_DOMAIN', () => {
-    const result = getWalkInEmail('any-tenant');
-    expect(result).toMatch(/@savspot\.co$/);
+  it('uses the default domain when none is passed', () => {
+    expect(getWalkInEmail('any-tenant')).toMatch(/@savspot\.co$/);
+  });
+
+  it('honors an explicit domain override', () => {
+    expect(getWalkInEmail('tenant-1', 'example.com')).toBe(
+      'walkin+tenant-1@example.com',
+    );
   });
 });

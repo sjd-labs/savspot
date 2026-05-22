@@ -39,9 +39,13 @@ export class CommunicationsHandler {
   ) {
 
     const apiKey = this.configService.get<string>('RESEND_API_KEY');
+    const apexDomain = this.configService.get<string>(
+      'branding.apexDomain',
+      'savspot.co',
+    );
     this.fromEmail = this.configService.get<string>(
       'RESEND_FROM_EMAIL',
-      'noreply@savspot.co',
+      `noreply@${apexDomain}`,
     );
 
     if (apiKey) {

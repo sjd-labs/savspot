@@ -8,6 +8,33 @@ export const appConfig = registerAs('app', () => ({
   webUrl: process.env['WEB_URL'] || 'http://localhost:3000',
 }));
 
+/**
+ * Platform-identity strings driven by env vars so the same codebase
+ * can serve client deployments (atelier-booking T1 factory pattern).
+ * Defaults preserve the historical hardcoded `savspot.co` values so
+ * existing deploys keep working unchanged after this refactor.
+ */
+export const brandingConfig = registerAs('branding', () => {
+  const apexDomain = process.env['APEX_DOMAIN'] || 'savspot.co';
+  return {
+    apexDomain,
+    cookieDomain: process.env['COOKIE_DOMAIN'] || `.${apexDomain}`,
+    marketingUrl: process.env['MARKETING_URL'] || `https://${apexDomain}`,
+    supportEmail: process.env['SUPPORT_EMAIL'] || `support@${apexDomain}`,
+    walkInEmailDomain: process.env['WALK_IN_EMAIL_DOMAIN'] || apexDomain,
+    customDomainCname: process.env['CUSTOM_DOMAIN_CNAME'] || `custom.${apexDomain}`,
+    anonymizedEmailDomain:
+      process.env['ANONYMIZED_EMAIL_DOMAIN'] || `deleted.${apexDomain}`,
+    // Historical value was `savspot.com` (typo for `.co`) baked into iCal
+    // UIDs. We preserve the typo as the default so existing calendar
+    // subscriptions don't see every event duplicate. New deployments
+    // should set ICAL_UID_DOMAIN to their real apex.
+    icalUidDomain: process.env['ICAL_UID_DOMAIN'] || 'savspot.com',
+    licensePricingUrl:
+      process.env['LICENSE_PRICING_URL'] || `https://${apexDomain}/pricing`,
+  };
+});
+
 export const jwtConfig = registerAs('jwt', () => ({
   privateKeyBase64: process.env['JWT_PRIVATE_KEY_BASE64'],
   publicKeyBase64: process.env['JWT_PUBLIC_KEY_BASE64'],

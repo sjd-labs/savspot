@@ -52,7 +52,7 @@ describe('IcalFeedService', () => {
 
   beforeEach(() => {
     prisma = makePrisma();
-    service = new IcalFeedService(prisma as never);
+    service = new IcalFeedService(prisma as never, { get: (_k: string, def?: unknown) => def ?? "savspot.com" } as never);
   });
 
   it('should generate a valid iCal feed for confirmed bookings', async () => {

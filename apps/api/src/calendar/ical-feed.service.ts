@@ -4,13 +4,17 @@ import {
   UnauthorizedException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class IcalFeedService {
   private readonly logger = new Logger(IcalFeedService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async generateFeed(tenantSlug: string, token: string): Promise<string> {
     if (!token) {
@@ -53,6 +57,17 @@ export class IcalFeedService {
       orderBy: { startTime: 'asc' },
     });
 
+    // Stable suffix for iCal UIDs. This was historically hardcoded as
+    // `@savspot.com` (a typo — should have been `.co`). Changing the UID
+    // makes already-synced calendars treat every event as new, so we keep
+    // the historical typo as the default to avoid mass duplication on
+    // existing feeds. Set ICAL_UID_DOMAIN (e.g. via `branding.icalUidDomain`
+    // → fed by config) when standing up a new deployment to use the correct
+    // domain from day one.
+    const icalUidDomain = this.configService.get<string>(
+      'branding.icalUidDomain',
+      'savspot.com',
+    );
     const now = this.formatDate(new Date());
     const lines: string[] = [
       'BEGIN:VCALENDAR',
@@ -72,7 +87,7 @@ export class IcalFeedService {
 
       lines.push(
         'BEGIN:VEVENT',
-        `UID:${booking.id}@savspot.com`,
+        `UID:${booking.id}@${icalUidDomain}`,
         `DTSTAMP:${now}`,
         `DTSTART:${this.formatDate(booking.startTime)}`,
         `DTEND:${this.formatDate(booking.endTime)}`,

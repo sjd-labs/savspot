@@ -68,7 +68,9 @@ describe('IcalFeedService', () => {
 
   beforeEach(() => {
     prisma = makePrisma();
-    service = new IcalFeedService(prisma as never);
+    service = new IcalFeedService(prisma as never, {
+      get: (_key: string, def?: unknown) => def ?? 'savspot.com',
+    } as never);
   });
 
   // -------------------------------------------------------------------------

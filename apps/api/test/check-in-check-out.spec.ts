@@ -62,7 +62,7 @@ describe('BookingsService check-in/check-out', () => {
     const payments = makePayments();
     const events = makeEvents();
     const referrals = { validateAndResolveReferralCode: vi.fn(), incrementUsageCount: vi.fn() };
-    service = new BookingsService(prisma as never, payments as never, events as never, referrals as never);
+    service = new BookingsService(prisma as never, payments as never, events as never, referrals as never, { get: (_k: string, def?: unknown) => def ?? "savspot.co" } as never);
   });
 
   // -----------------------------------------------------------------------

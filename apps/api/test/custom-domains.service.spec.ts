@@ -79,6 +79,9 @@ describe('CustomDomainsService', () => {
       prisma as never,
       dnsVerifier as unknown as DnsVerifierService,
       sslManager as unknown as SslManagerService,
+      {
+        get: (_key: string, def?: unknown) => def ?? 'custom.savspot.co',
+      } as never,
     );
   });
 

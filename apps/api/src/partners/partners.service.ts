@@ -4,6 +4,7 @@ import {
   ConflictException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { randomBytes } from 'node:crypto';
 import { Decimal } from '@/generated/prisma/runtime/library';
 import { PartnerStatus, PartnerTier } from '@/generated/prisma';
@@ -14,7 +15,10 @@ import { ApplyPartnerDto } from './dto/apply-partner.dto';
 export class PartnersService {
   private readonly logger = new Logger(PartnersService.name);
 
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
+  ) {}
 
   async apply(userId: string, dto: ApplyPartnerDto) {
     const existing = await this.prisma.partner.findUnique({
@@ -92,8 +96,12 @@ export class PartnersService {
       throw new NotFoundException('Partner not found');
     }
 
+    const marketingUrl = this.configService.get<string>(
+      'branding.marketingUrl',
+      'https://savspot.co',
+    );
     return {
-      referralLink: `https://savspot.co/signup?partner=${partner.referralCode}`,
+      referralLink: `${marketingUrl}/signup?partner=${partner.referralCode}`,
       referralCode: partner.referralCode,
     };
   }

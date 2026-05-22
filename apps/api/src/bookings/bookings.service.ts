@@ -5,6 +5,7 @@ import {
   ConflictException,
   Logger,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaymentsService } from '../payments/payments.service';
@@ -38,6 +39,7 @@ export class BookingsService {
     private readonly paymentsService: PaymentsService,
     private readonly eventsService: EventsService,
     private readonly referralsService: ReferralsService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -628,13 +630,19 @@ export class BookingsService {
       // For anonymous walk-ins, use a walk-in placeholder user
       // In practice, we still need a clientId because it's required
       let walkInUser = await this.prisma.user.findFirst({
-        where: { email: getWalkInEmail(tenantId) },
+        where: { email: getWalkInEmail(
+            tenantId,
+            this.configService.get<string>('branding.walkInEmailDomain'),
+          ) },
       });
 
       if (!walkInUser) {
         walkInUser = await this.prisma.user.create({
           data: {
-            email: getWalkInEmail(tenantId),
+            email: getWalkInEmail(
+            tenantId,
+            this.configService.get<string>('branding.walkInEmailDomain'),
+          ),
             name: 'Walk-in Client',
           },
         });

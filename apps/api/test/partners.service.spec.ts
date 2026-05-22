@@ -57,7 +57,9 @@ describe('PartnersService', () => {
 
   beforeEach(() => {
     prisma = makePrisma();
-    service = new PartnersService(prisma as never);
+    service = new PartnersService(prisma as never, {
+      get: (_key: string, def?: unknown) => def ?? 'https://savspot.co',
+    } as never);
   });
 
   // -------------------------------------------------------------------------

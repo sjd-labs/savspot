@@ -41,7 +41,7 @@ describe('AccountDeletionHandler', () => {
 
   beforeEach(() => {
     prisma = makePrisma();
-    handler = new AccountDeletionHandler(prisma as never);
+    handler = new AccountDeletionHandler(prisma as never, { get: (_k: string, def?: unknown) => def ?? "deleted.savspot.co" } as never);
   });
 
   it('should skip when no pending deletion requests exist', async () => {
