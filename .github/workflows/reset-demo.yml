@@ -5,6 +5,9 @@ on:
     - cron: '17 6 * * *' # 6:17 UTC daily
   workflow_dispatch: # manual trigger
 
+permissions:
+  contents: read
+
 jobs:
   reset:
     runs-on: ubuntu-latest
@@ -19,24 +22,15 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
 
-      - uses: superfly/flyctl-actions/setup-flyctl@1.5
-
       - run: pnpm install --frozen-lockfile
-
-      - name: Build shared package
-        run: pnpm --filter @savspot/shared build
 
       - name: Generate Prisma client
         run: pnpm db:generate
 
-      - name: Start Fly proxy
-        run: |
-          flyctl proxy 15432:5432 -a savspot-db &
-          sleep 3
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-
+      # Connects directly to the Supabase Supavisor pooler. We previously
+      # used `flyctl proxy 15432:5432 -a savspot-db` to reach Fly Postgres;
+      # that's gone as part of the Fly → Supabase migration.
       - name: Reset demo tenant
         run: pnpm exec tsx scripts/admin/reset-demo.ts
         env:
-          DATABASE_URL: postgres://postgres:${{ secrets.FLY_PG_PASSWORD }}@localhost:15432/savspot?sslmode=disable
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
