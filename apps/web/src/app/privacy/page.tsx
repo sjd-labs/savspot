@@ -3,8 +3,12 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy | SavSpot',
-  description: 'SavSpot Privacy Policy',
+  description: 'How SavSpot collects, uses, and protects personal information.',
 };
+
+const EFFECTIVE_DATE = 'May 22, 2026';
+const SUPPORT_EMAIL = 'support@savspot.co';
+const PRIVACY_EMAIL = 'privacy@savspot.co';
 
 export default function PrivacyPage() {
   return (
@@ -19,28 +23,518 @@ export default function PrivacyPage() {
 
       <main className="mx-auto max-w-4xl px-4 py-12">
         <h1 className="text-3xl font-bold tracking-tight">Privacy Policy</h1>
-        <p className="mt-4 text-muted-foreground">
-          This page will contain the SavSpot Privacy Policy, authored by legal
-          counsel. Content is forthcoming.
-        </p>
         <p className="mt-2 text-sm text-muted-foreground">
-          For questions, contact{' '}
-          <a
-            href="mailto:support@savspot.co"
-            className="font-medium text-foreground hover:underline"
-          >
-            support@savspot.co
-          </a>
-          .
+          Effective date: {EFFECTIVE_DATE}
         </p>
+
+        <aside
+          className="mt-6 rounded-md border border-amber-500/50 bg-amber-500/10 p-4 text-sm"
+          role="note"
+        >
+          <strong className="font-semibold">Template notice.</strong> This
+          document is a starting-point template that reflects the platform&rsquo;s
+          actual data practices but is not legal advice. Have it reviewed by
+          qualified counsel admitted in your jurisdiction before relying on it
+          and update the placeholders for legal-entity name and governing law to
+          match your business.
+        </aside>
+
+        <section className="prose prose-neutral dark:prose-invert mt-8 max-w-none">
+          <h2>1. Introduction</h2>
+          <p>
+            This Privacy Policy explains how <strong>SavSpot</strong>{' '}
+            (&ldquo;SavSpot,&rdquo; &ldquo;we,&rdquo; &ldquo;us,&rdquo; or
+            &ldquo;our&rdquo;), operated by{' '}
+            <strong>[Your Legal Entity Name]</strong>, collects, uses, discloses,
+            and protects personal information when you visit{' '}
+            <code>www.savspot.co</code>, create an account, use the SavSpot
+            booking platform, or otherwise interact with our services
+            (collectively, the &ldquo;Service&rdquo;).
+          </p>
+          <p>
+            SavSpot is a multi-tenant SaaS booking platform. Service businesses
+            (&ldquo;Tenants&rdquo;) use the Service to run their booking
+            operations; the customers of those businesses (&ldquo;Clients&rdquo;)
+            book appointments and services through Tenant-branded pages. We
+            process personal information about both Tenants and Clients, and our
+            relationship to that data depends on whose information it is &mdash;
+            see Section 9 for how we handle Tenant vs. Client data.
+          </p>
+
+          <h2>2. At-a-glance summary</h2>
+          <ul>
+            <li>
+              We collect what you give us when you sign up, configure a booking
+              page, book an appointment, or contact support.
+            </li>
+            <li>
+              We collect technical data (IP address, device, cookies) needed to
+              keep you logged in, prevent abuse, and measure aggregate usage.
+            </li>
+            <li>
+              We use sub-processors for payments (Stripe), email (Resend), SMS
+              (Twilio), authentication and database (Supabase), hosting
+              (Vercel), error reporting (Sentry), and product analytics
+              (PostHog). We don&rsquo;t sell personal information.
+            </li>
+            <li>
+              You can access, correct, export, or delete your personal
+              information &mdash; see Section 11.
+            </li>
+            <li>
+              When a Tenant uses SavSpot to serve their Clients, the Tenant is
+              the controller of that Client data and we are a processor acting
+              on the Tenant&rsquo;s instructions.
+            </li>
+          </ul>
+
+          <h2>3. Who we are and how to contact us</h2>
+          <p>
+            The data controller for personal information collected through the
+            Service is <strong>[Your Legal Entity Name]</strong>,{' '}
+            <strong>[Your Registered Address]</strong>. Privacy-related requests
+            (access, correction, deletion, opt-out, or complaints) should go to{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. General
+            support is at{' '}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>.
+          </p>
+
+          <h2>4. Information we collect</h2>
+
+          <h3>4.1 Information you provide directly</h3>
+          <ul>
+            <li>
+              <strong>Account information</strong> &mdash; name, email, phone
+              number (optional), a hashed copy of your password (we never store
+              the plaintext), and your role within your business.
+            </li>
+            <li>
+              <strong>Business profile</strong> &mdash; the business&rsquo;s
+              legal and trading names, address, contact email and phone,
+              category, logo, cover photo, and any branding text you upload.
+            </li>
+            <li>
+              <strong>Client information you enter</strong> &mdash; names,
+              emails, phone numbers, addresses, booking histories, internal
+              notes, and any custom fields you create. This data belongs to your
+              Tenant (see Section 9).
+            </li>
+            <li>
+              <strong>Booking and transactional data</strong> &mdash; the
+              services booked, dates and times, prices, deposits, refunds, and
+              payment statuses.
+            </li>
+            <li>
+              <strong>Support communications</strong> &mdash; messages and
+              attachments you send to us through email, the help center, or
+              chat.
+            </li>
+          </ul>
+
+          <h3>4.2 Information we collect automatically</h3>
+          <ul>
+            <li>
+              <strong>Authentication and session cookies</strong> &mdash; we set{' '}
+              <code>savspot_access</code>, <code>savspot_refresh</code>, and{' '}
+              <code>savspot_session</code> cookies to keep you signed in across
+              page loads, scoped to <code>.savspot.co</code>. These cookies are
+              strictly necessary for the Service to function.
+            </li>
+            <li>
+              <strong>Log data</strong> &mdash; IP address, user-agent string,
+              referring URL, timestamps, and the API endpoints you call. Used
+              for security, abuse prevention, and operational debugging.
+            </li>
+            <li>
+              <strong>Device data</strong> &mdash; browser, operating system,
+              and device type as reported by your browser.
+            </li>
+            <li>
+              <strong>Product analytics</strong> &mdash; PostHog records
+              pseudonymous events (which pages you visit, which features you
+              use) so we can understand which parts of the Service are valuable.
+              No payment data and no Client PII is sent to PostHog.
+            </li>
+            <li>
+              <strong>Error reports</strong> &mdash; Sentry captures stack
+              traces and request metadata when something breaks. PII is
+              scrubbed from error payloads before transmission to the extent
+              technically possible.
+            </li>
+          </ul>
+
+          <h3>4.3 Information we receive from third parties</h3>
+          <ul>
+            <li>
+              <strong>OAuth providers (Google, Apple)</strong> &mdash; if you
+              sign in with Google or Apple, we receive your basic profile
+              (name, email, profile picture) and an opaque provider user ID.
+              We do not receive your password.
+            </li>
+            <li>
+              <strong>Stripe</strong> &mdash; payment status, the last four
+              digits of the card used, the card brand and expiration, and
+              Stripe&rsquo;s opaque customer and account identifiers. We do not
+              receive or store full card numbers, CVV codes, or bank account
+              numbers.
+            </li>
+            <li>
+              <strong>Calendar integrations</strong> &mdash; if you connect a
+              Google or Outlook calendar, we read free/busy data and create
+              events on your behalf only for accounts you have connected.
+            </li>
+          </ul>
+
+          <h2>5. How we use information</h2>
+          <ul>
+            <li>To provide, operate, and maintain the Service.</li>
+            <li>
+              To process payments, calculate platform fees, and remit funds
+              through Stripe Connect.
+            </li>
+            <li>
+              To send transactional communications (booking confirmations,
+              reminders, password resets, security alerts). You cannot opt out
+              of these because they are essential to the Service.
+            </li>
+            <li>
+              To send service updates and product announcements where permitted
+              by law. You can opt out of marketing emails via the unsubscribe
+              link or your preference center.
+            </li>
+            <li>
+              To detect, prevent, and investigate fraud, abuse, security
+              incidents, and violations of our Terms of Service.
+            </li>
+            <li>
+              To comply with legal obligations and respond to lawful requests
+              from authorities.
+            </li>
+            <li>
+              To improve the Service via aggregated, de-identified analytics
+              and performance monitoring.
+            </li>
+          </ul>
+
+          <h2>6. Legal bases for processing (GDPR / UK GDPR)</h2>
+          <p>
+            Where the GDPR or UK GDPR applies, we rely on the following legal
+            bases:
+          </p>
+          <ul>
+            <li>
+              <strong>Contract</strong> &mdash; to deliver the Service you have
+              signed up for (Article 6(1)(b)).
+            </li>
+            <li>
+              <strong>Legitimate interests</strong> &mdash; to secure the
+              Service, prevent abuse, and improve the product, balanced
+              against your privacy rights (Article 6(1)(f)).
+            </li>
+            <li>
+              <strong>Consent</strong> &mdash; for non-essential cookies,
+              marketing communications, and other optional uses where consent
+              is the appropriate basis (Article 6(1)(a)). You may withdraw
+              consent at any time.
+            </li>
+            <li>
+              <strong>Legal obligation</strong> &mdash; to comply with
+              applicable law, including tax, anti-money-laundering, and
+              law-enforcement requirements (Article 6(1)(c)).
+            </li>
+          </ul>
+
+          <h2>7. How we share information</h2>
+
+          <h3>7.1 Sub-processors</h3>
+          <p>
+            We use the following sub-processors to deliver the Service. Each
+            handles only the data necessary for its function and is bound by
+            written agreements that prohibit other use:
+          </p>
+          <ul>
+            <li>
+              <strong>Stripe, Inc.</strong> &mdash; payment processing, payouts
+              to Tenants via Stripe Connect.
+            </li>
+            <li>
+              <strong>Supabase, Inc.</strong> &mdash; managed PostgreSQL,
+              authentication, and object storage for files you upload.
+            </li>
+            <li>
+              <strong>Vercel, Inc.</strong> &mdash; application hosting, edge
+              network, log routing.
+            </li>
+            <li>
+              <strong>Resend</strong> &mdash; transactional and marketing
+              email delivery.
+            </li>
+            <li>
+              <strong>Twilio Inc.</strong> &mdash; SMS delivery for booking
+              reminders and authentication codes.
+            </li>
+            <li>
+              <strong>Sentry</strong> &mdash; application error reporting.
+            </li>
+            <li>
+              <strong>PostHog</strong> &mdash; product analytics.
+            </li>
+            <li>
+              <strong>Google LLC, Apple Inc.</strong> &mdash; OAuth sign-in and
+              calendar synchronization (only for accounts you connect).
+            </li>
+          </ul>
+          <p>
+            We may add or change sub-processors. Material changes will be
+            announced in advance via this page or by email to account owners.
+          </p>
+
+          <h3>7.2 Between Tenants and their Clients</h3>
+          <p>
+            Information you enter as a Tenant is visible to your team members
+            you have invited. Booking data and Client information is{' '}
+            <em>not</em> shared with other Tenants. Multi-tenant data
+            isolation is enforced at the database layer through row-level
+            security.
+          </p>
+
+          <h3>7.3 Legal compliance and protection</h3>
+          <p>
+            We may disclose information when we believe in good faith that
+            disclosure is necessary to (a) comply with applicable law, court
+            orders, subpoenas, or valid governmental requests; (b) enforce our
+            Terms of Service; (c) protect the rights, property, or safety of
+            SavSpot, our users, or others; or (d) investigate fraud, security,
+            or technical issues.
+          </p>
+
+          <h3>7.4 Business transfers</h3>
+          <p>
+            If SavSpot is involved in a merger, acquisition, financing,
+            reorganization, bankruptcy, or sale of assets, your information may
+            be transferred as part of that transaction. We will provide notice
+            on this site of any change in ownership or material change to the
+            uses of your information.
+          </p>
+
+          <h3>7.5 What we don&rsquo;t do</h3>
+          <p>
+            We do not sell personal information for monetary consideration. We
+            do not share information with advertisers for cross-context
+            behavioral advertising. We do not engage in &ldquo;sale&rdquo; or
+            &ldquo;sharing&rdquo; of personal information as those terms are
+            defined under the California Consumer Privacy Act (CCPA) as
+            amended by the CPRA.
+          </p>
+
+          <h2>8. Cookies and similar technologies</h2>
+          <p>We use the following categories of cookies:</p>
+          <ul>
+            <li>
+              <strong>Strictly necessary</strong> &mdash; authentication and
+              session cookies that keep you logged in. These cannot be
+              disabled and the Service cannot function without them.
+            </li>
+            <li>
+              <strong>Functional</strong> &mdash; remember your preferences
+              such as theme, locale, and dashboard layout.
+            </li>
+            <li>
+              <strong>Analytics</strong> &mdash; PostHog cookies, where used,
+              record pseudonymous interaction events to help us improve the
+              Service. Where required by law we ask for consent before
+              setting these.
+            </li>
+          </ul>
+          <p>
+            You can clear cookies through your browser settings. Doing so will
+            log you out and may reset preferences.
+          </p>
+
+          <h2>9. Multi-tenancy: controller vs. processor roles</h2>
+          <p>
+            When a Tenant uses SavSpot to take bookings from its Clients, two
+            different relationships exist:
+          </p>
+          <ul>
+            <li>
+              <strong>SavSpot is the controller</strong> for personal
+              information about Tenant administrators and team members (the
+              users who sign in to SavSpot to run the business). This Privacy
+              Policy governs that relationship.
+            </li>
+            <li>
+              <strong>SavSpot is a processor</strong> for personal information
+              about Clients that Tenants enter into the platform &mdash;
+              including names, contact details, booking histories, and notes.
+              The Tenant is the controller for that data, decides how it is
+              used, and is responsible for its own privacy notices, lawful
+              basis for processing, and responses to data-subject requests.
+              Our Data Processing Addendum (available on request) governs
+              that relationship.
+            </li>
+          </ul>
+          <p>
+            If you are a Client of a SavSpot Tenant and have questions about
+            how the Tenant uses your data, contact the Tenant directly. SavSpot
+            will forward verified requests to the relevant Tenant when we
+            cannot act on them ourselves.
+          </p>
+
+          <h2>10. Data retention</h2>
+          <p>
+            We retain personal information for as long as needed to provide
+            the Service and as required by law:
+          </p>
+          <ul>
+            <li>
+              <strong>Account data</strong> &mdash; for the life of your
+              account plus 90 days after deletion to allow recovery.
+            </li>
+            <li>
+              <strong>Booking and transaction records</strong> &mdash; for at
+              least seven (7) years after the transaction to comply with
+              standard accounting, tax, and chargeback-window requirements.
+            </li>
+            <li>
+              <strong>Authentication logs</strong> &mdash; for at least 12
+              months for security investigations.
+            </li>
+            <li>
+              <strong>Marketing preferences and opt-outs</strong> &mdash; kept
+              indefinitely to honor your choices, even after you delete your
+              account.
+            </li>
+            <li>
+              <strong>Backups</strong> &mdash; rolling 30-day backups; data
+              that has been deleted from production will age out of backups
+              within that window.
+            </li>
+          </ul>
+
+          <h2>11. Your rights</h2>
+          <p>
+            Depending on where you live, you may have the following rights
+            under laws such as the GDPR, UK GDPR, CCPA/CPRA, and similar
+            state laws:
+          </p>
+          <ul>
+            <li>
+              <strong>Access</strong> &mdash; receive a copy of the personal
+              information we hold about you.
+            </li>
+            <li>
+              <strong>Correction</strong> &mdash; correct inaccurate or
+              incomplete information.
+            </li>
+            <li>
+              <strong>Deletion</strong> &mdash; ask us to delete your account
+              and personal information, subject to legal-retention exceptions.
+            </li>
+            <li>
+              <strong>Portability</strong> &mdash; receive your data in a
+              structured, machine-readable format.
+            </li>
+            <li>
+              <strong>Restriction and objection</strong> &mdash; object to or
+              restrict certain processing.
+            </li>
+            <li>
+              <strong>Withdraw consent</strong> &mdash; withdraw any consent
+              you have given without affecting the lawfulness of prior
+              processing.
+            </li>
+            <li>
+              <strong>Non-discrimination</strong> &mdash; we will not deny,
+              charge for, or downgrade your Service for exercising these
+              rights.
+            </li>
+            <li>
+              <strong>Complaint</strong> &mdash; lodge a complaint with your
+              local supervisory authority. EEA/UK users may contact their
+              data-protection authority directly.
+            </li>
+          </ul>
+          <p>
+            To exercise these rights, email{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>. We may
+            need to verify your identity. We will respond within the
+            timeframes required by applicable law (typically 30&ndash;45
+            days). We may charge a reasonable fee or refuse manifestly
+            unfounded or excessive requests, as permitted by law.
+          </p>
+
+          <h2>12. International data transfers</h2>
+          <p>
+            SavSpot infrastructure is primarily hosted in the United States.
+            If you access the Service from outside the United States, your
+            information will be transferred to, processed, and stored in the
+            United States. Where required by law (for example, transfers out
+            of the EEA or UK), we rely on the European Commission&rsquo;s
+            Standard Contractual Clauses (SCCs) or equivalent transfer
+            mechanisms with our sub-processors.
+          </p>
+
+          <h2>13. Children</h2>
+          <p>
+            The Service is not directed to children under 16, and we do not
+            knowingly collect personal information from children under 16.
+            Where required, Tenants serving minors are responsible for
+            obtaining the verifiable consent required by COPPA, GDPR Article
+            8, or other applicable law. If you believe a child has provided
+            personal information to us without appropriate consent, contact{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a> and we
+            will delete it.
+          </p>
+
+          <h2>14. Security</h2>
+          <p>
+            We implement technical and organizational measures designed to
+            protect personal information, including: TLS in transit, AES-256
+            at rest at the database layer, password hashing with bcrypt,
+            row-level security for multi-tenant isolation, optional
+            multi-factor authentication, role-based access controls within
+            our team, audit logging of administrative actions, automated
+            backups, and ongoing dependency scanning. No system is perfectly
+            secure; we cannot guarantee absolute security.
+          </p>
+
+          <h2>15. Changes to this Policy</h2>
+          <p>
+            We may update this Privacy Policy from time to time to reflect
+            changes in our practices or for other operational, legal, or
+            regulatory reasons. When we do, we will update the &ldquo;Effective
+            date&rdquo; at the top, and for material changes we will provide
+            additional notice (such as an in-product banner or email).
+            Continued use of the Service after the effective date of an
+            updated policy constitutes acceptance of the changes.
+          </p>
+
+          <h2>16. Contact</h2>
+          <p>
+            Privacy questions or requests:{' '}
+            <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
+            <br />
+            General support:{' '}
+            <a href={`mailto:${SUPPORT_EMAIL}`}>{SUPPORT_EMAIL}</a>
+            <br />
+            Postal: [Your Registered Address]
+          </p>
+        </section>
       </main>
 
       <footer className="border-t py-8">
         <div className="mx-auto flex max-w-4xl items-center gap-6 px-4">
-          <Link href="/" className="text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
             Home
           </Link>
-          <Link href="/terms" className="text-sm text-muted-foreground hover:text-foreground">
+          <Link
+            href="/terms"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
             Terms of Service
           </Link>
         </div>
