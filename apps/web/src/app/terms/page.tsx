@@ -216,12 +216,55 @@ export default function TermsPage() {
             </li>
             <li>
               use the Service to collect personal information from minors
-              without verifiable parental consent where required.
+              without verifiable parental consent where required;
+            </li>
+            <li>
+              upload, store, transmit, or otherwise process through the
+              Service any Protected Health Information (&ldquo;PHI&rdquo;) or
+              electronic Protected Health Information (&ldquo;ePHI&rdquo;) as
+              defined under the Health Insurance Portability and
+              Accountability Act of 1996 and its implementing regulations
+              (&ldquo;HIPAA&rdquo;) &mdash; see the healthcare-data
+              exclusion below.
             </li>
           </ul>
           <p>
             We may suspend or terminate access to the Service for any
             violation of this Section without prior notice.
+          </p>
+
+          <h3 id="hipaa">Healthcare data exclusion (HIPAA)</h3>
+          <p>
+            <strong>
+              SavSpot is not designed or intended for the storage,
+              transmission, or processing of Protected Health Information.
+            </strong>{' '}
+            SJD Labs, LLC is not a HIPAA Covered Entity or Business
+            Associate, has not entered into and will not enter into a
+            Business Associate Agreement (&ldquo;BAA&rdquo;) covering the
+            Service, and makes no representations or warranties regarding
+            HIPAA, HITECH, or any state health-privacy compliance.
+          </p>
+          <p>
+            If you are a Covered Entity or Business Associate under HIPAA
+            (including, without limitation, healthcare providers,
+            chiropractors, mental-health and behavioral-health practitioners,
+            massage therapists, physical therapists, and other licensed
+            healthcare professionals to the extent they create, receive,
+            maintain, or transmit PHI), you may use SavSpot only for the
+            booking-related, non-PHI portions of your operations. You must
+            not enter, attach, or transmit PHI through the Service &mdash;
+            including in Client names tied to clinical context, free-text
+            note fields, intake forms, uploaded files, communications, or
+            otherwise.
+          </p>
+          <p>
+            We reserve the right to suspend or terminate any account we
+            reasonably believe is being used to store or transmit PHI in
+            violation of this Section. Your indemnification obligations in
+            Section 18 expressly extend to any claims arising from PHI you
+            enter or cause to be entered into the Service in breach of this
+            Section.
           </p>
 
           <h2>8. User Content and Client data</h2>

@@ -626,7 +626,26 @@ export default function PrivacyPage() {
             will delete it.
           </p>
 
-          <h2>15. Security</h2>
+          <h2>15. Healthcare information (HIPAA exclusion)</h2>
+          <p>
+            The Service is not designed for the storage, transmission, or
+            processing of Protected Health Information (&ldquo;PHI&rdquo;) or
+            electronic Protected Health Information as defined under the
+            Health Insurance Portability and Accountability Act of 1996
+            and its implementing regulations (&ldquo;HIPAA&rdquo;). SJD
+            Labs, LLC is not a HIPAA Business Associate, does not enter into
+            Business Associate Agreements covering the Service, and does
+            not represent that the Service is HIPAA-compliant.
+          </p>
+          <p>
+            If you are a Covered Entity or Business Associate under HIPAA,
+            you must not enter PHI into the Service. We may suspend or
+            terminate accounts we reasonably believe are being used to
+            store or transmit PHI in violation of our{' '}
+            <Link href="/terms">Terms of Service</Link>.
+          </p>
+
+          <h2>16. Security</h2>
           <p>
             We implement technical and organizational measures designed to
             protect personal information, including: TLS in transit, AES-256
@@ -638,7 +657,7 @@ export default function PrivacyPage() {
             secure; we cannot guarantee absolute security.
           </p>
 
-          <h2>16. Changes to this Policy</h2>
+          <h2>17. Changes to this Policy</h2>
           <p>
             We may update this Privacy Policy from time to time to reflect
             changes in our practices or for other operational, legal, or
@@ -649,7 +668,7 @@ export default function PrivacyPage() {
             updated policy constitutes acceptance of the changes.
           </p>
 
-          <h2>17. Contact</h2>
+          <h2>18. Contact</h2>
           <p>
             Privacy questions or requests:{' '}
             <a href={`mailto:${PRIVACY_EMAIL}`}>{PRIVACY_EMAIL}</a>
