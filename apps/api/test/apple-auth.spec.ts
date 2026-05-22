@@ -84,6 +84,7 @@ describe('AuthService – validateAppleUser', () => {
       tokenService as never,
       passwordService as never,
       emailService as never,
+      { isEnabled: () => false } as never, // SupabaseAuthService stub
     );
   });
 

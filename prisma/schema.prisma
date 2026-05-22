@@ -881,6 +881,12 @@ model User {
   emailVerified    Boolean      @default(false) @map("email_verified")
   googleId         String?      @unique @map("google_id")
   appleId          String?      @unique @map("apple_id")
+  // Supabase Auth user id (auth.users.id) once the user has been
+  // provisioned there as part of the Phase 5 dual-stack migration.
+  // Populated lazily on first password login. Lets the Nest session
+  // accept either a custom RS256 JWT (legacy) or a Supabase ES256 JWT
+  // (new) against this row.
+  supabaseUserId   String?      @unique @map("supabase_user_id") @db.Uuid
   locale           String?
   timezone         String?
   mfaEnabled       Boolean      @default(false) @map("mfa_enabled")

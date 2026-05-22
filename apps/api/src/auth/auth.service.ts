@@ -12,6 +12,7 @@ import { RedisService } from '../redis/redis.service';
 import { TokenService, JwtPayload } from './services/token.service';
 import { PasswordService } from './services/password.service';
 import { EmailService } from './services/email.service';
+import { SupabaseAuthService } from './services/supabase-auth.service';
 import { RegisterDto } from './dto/register.dto';
 
 const RESET_TOKEN_PREFIX = 'password-reset:';
@@ -27,7 +28,43 @@ export class AuthService {
     private readonly tokenService: TokenService,
     private readonly passwordService: PasswordService,
     private readonly emailService: EmailService,
+    private readonly supabaseAuth: SupabaseAuthService,
   ) {}
+
+  /**
+   * Lazy Phase 5 hook: ensure the freshly-authenticated SavSpot user
+   * is also a Supabase Auth user, and that `User.supabaseUserId` is
+   * filled in. Best-effort — a failure here must NOT block the login
+   * (the legacy custom-JWT flow keeps working). We just log and move on
+   * so the next login can retry.
+   */
+  private async linkToSupabase(user: {
+    id: string;
+    email: string;
+    emailVerified: boolean;
+    supabaseUserId: string | null;
+    name: string;
+  }): Promise<void> {
+    if (user.supabaseUserId) return;
+    if (!this.supabaseAuth.isEnabled()) return;
+
+    try {
+      const supabaseUserId = await this.supabaseAuth.provisionUser({
+        email: user.email,
+        emailVerified: user.emailVerified,
+        metadata: { savspotUserId: user.id, name: user.name },
+      });
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: { supabaseUserId },
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(
+        `Failed to link user ${user.id} to Supabase Auth: ${message}`,
+      );
+    }
+  }
 
   async register(dto: RegisterDto) {
     const existing = await this.prisma.user.findUnique({
@@ -104,6 +141,16 @@ export class AuthService {
         userId: user.id,
       };
     }
+
+    // Phase 5: lazy-link to Supabase Auth on successful password login.
+    // Best-effort — failure is logged but doesn't block the response.
+    await this.linkToSupabase({
+      id: user.id,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      supabaseUserId: user.supabaseUserId,
+      name: user.name,
+    });
 
     // If user has exactly one tenant membership, include it in tokens
     const membership = user.memberships.length === 1 ? user.memberships[0] : undefined;

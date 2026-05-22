@@ -120,6 +120,7 @@ Table users {
   emailVerified Boolean [not null, default: false]
   googleId String [unique]
   appleId String [unique]
+  supabaseUserId String [unique]
   locale String
   timezone String
   mfaEnabled Boolean [not null, default: false]

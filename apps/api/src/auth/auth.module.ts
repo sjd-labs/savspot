@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 import { TokenService } from './services/token.service';
 import { PasswordService } from './services/password.service';
 import { EmailService } from './services/email.service';
+import { SupabaseAuthService } from './services/supabase-auth.service';
 import { ApiKeyService } from './api-key.service';
 import { MfaService } from './mfa/mfa.service';
 import { PermissionsService } from './permissions/permissions.service';
@@ -31,6 +32,7 @@ import { CommunicationsModule } from '../communications/communications.module';
     TokenService,
     PasswordService,
     EmailService,
+    SupabaseAuthService,
     ApiKeyService,
     MfaService,
     PermissionsService,
@@ -43,6 +45,13 @@ import { CommunicationsModule } from '../communications/communications.module';
       useClass: JwtAuthGuard,
     },
   ],
-  exports: [AuthService, TokenService, ApiKeyService, MfaService, PermissionsService],
+  exports: [
+    AuthService,
+    TokenService,
+    SupabaseAuthService,
+    ApiKeyService,
+    MfaService,
+    PermissionsService,
+  ],
 })
 export class AuthModule {}
