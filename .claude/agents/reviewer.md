@@ -3,8 +3,7 @@ name: reviewer
 description: >
   Reviews code changes for bugs, security issues, and quality problems.
   Use before merging important changes. Read-only — does not modify files.
-model: claude-opus-4-6
-allowed_tools:
+tools:
   - Read
   - Glob
   - Grep
