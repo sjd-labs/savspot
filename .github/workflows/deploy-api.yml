@@ -48,12 +48,21 @@ jobs:
 
       - name: Pull Vercel project settings
         working-directory: apps/api
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Build api bundle
         working-directory: apps/api
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
 
       - name: Deploy prebuilt to Vercel
         working-directory: apps/api
+        env:
+          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
+          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
         run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
