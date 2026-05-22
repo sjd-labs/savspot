@@ -127,20 +127,12 @@ export class AvailabilityRulesService {
 
   /**
    * Invalidate all availability rule cache keys for a tenant.
-   * Uses a wildcard scan since rules can be cached under multiple service/venue combinations.
+   * Rules are cached under multiple service/venue combinations, so we
+   * delete by glob pattern.
    */
   private async invalidateRulesCache(tenantId: string): Promise<void> {
     try {
-      const client = this.redis.getClient();
-      const pattern = `availability:rules:${tenantId}:*`;
-      let cursor = '0';
-      do {
-        const [nextCursor, keys] = await client.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
-        cursor = nextCursor;
-        if (keys.length > 0) {
-          await this.redis.del(...keys);
-        }
-      } while (cursor !== '0');
+      await this.redis.delByPattern(`availability:rules:${tenantId}:*`);
     } catch {
       this.logger.warn(`Failed to invalidate availability rules cache for tenant ${tenantId}`);
     }

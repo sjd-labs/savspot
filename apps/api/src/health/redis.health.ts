@@ -18,14 +18,14 @@ export class RedisHealthIndicator {
     const indicator = this.healthIndicatorService.check(key);
 
     try {
-      const result = await this.redisService.getClient().ping();
+      const result = await this.redisService.ping();
       if (result !== 'PONG') {
-        return indicator.down('Redis ping did not return PONG');
+        return indicator.down('Cache ping did not return PONG');
       }
       return indicator.up();
     } catch (error) {
       return indicator.down(
-        error instanceof Error ? error.message : 'Redis ping failed',
+        error instanceof Error ? error.message : 'Cache ping failed',
       );
     }
   }

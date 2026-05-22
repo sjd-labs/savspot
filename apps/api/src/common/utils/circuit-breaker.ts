@@ -67,8 +67,7 @@ export class CircuitBreaker {
     const stateKey = `${prefix}:state`;
 
     // Increment failure counter
-    const client = this.redis.getClient();
-    const failures = await client.incr(failuresKey);
+    const failures = await this.redis.incr(failuresKey);
     await this.redis.expire(failuresKey, COUNTER_TTL_SECONDS);
 
     if (failures >= FAILURE_THRESHOLD) {

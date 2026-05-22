@@ -30,6 +30,7 @@ import { MorningSummaryHandler } from '@/sms/morning-summary.processor';
 import { SmsHandler } from '@/sms/sms.processor';
 import { WeeklyDigestHandler } from '@/sms/weekly-digest.processor';
 import { CurrencyService } from '@/currency/currency.service';
+import { RedisService } from '@/redis/redis.service';
 import { CustomDomainsService } from '@/custom-domains/custom-domains.service';
 import { DirectoryListingService } from '@/directory/directory-listing.service';
 import { ImportsService } from '@/imports/imports.service';
@@ -117,6 +118,7 @@ import {
   createRetryFailedPaymentsFunction,
   createSendPaymentRemindersFunction,
 } from './functions/payments/cron.functions';
+import { createCacheSweepFunction } from './functions/cache/sweep.function';
 
 /**
  * Serves Inngest's webhook endpoint at /inngest. Inngest cloud:
@@ -186,6 +188,7 @@ export class InngestController {
     private readonly sendPaymentRemindersHandler: SendPaymentRemindersHandler,
     private readonly enforcePaymentDeadlinesHandler: EnforcePaymentDeadlinesHandler,
     private readonly retryFailedPaymentsHandler: RetryFailedPaymentsHandler,
+    private readonly cacheKv: RedisService,
   ) {
     this.handler = serve({
       client: inngest,
@@ -249,6 +252,7 @@ export class InngestController {
           this.enforcePaymentDeadlinesHandler,
         ),
         createRetryFailedPaymentsFunction(this.retryFailedPaymentsHandler),
+        createCacheSweepFunction(this.cacheKv),
       ],
     });
   }

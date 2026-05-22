@@ -3159,3 +3159,23 @@ model WaitlistEntry {
   @@index([serviceId, preferredDate, status])
   @@map("waitlist_entries")
 }
+
+/// Postgres-backed key-value store. Replaces Redis for cache,
+/// rate-limit counters, circuit-breaker state, dedup keys, and
+/// generally anything that used to live under RedisService. The
+/// `expiresAt` column emulates Redis TTL — readers ignore expired
+/// rows; a periodic Inngest sweep deletes them.
+///
+/// Schema is intentionally generic (one row = one key) so the
+/// existing RedisService interface (get/set/setex/del/exists/incr/
+/// expire) can stay stable across the swap.
+model CacheEntry {
+  key       String    @id @db.VarChar(512)
+  value     String    @db.Text
+  expiresAt DateTime? @map("expires_at") @db.Timestamptz(6)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@index([expiresAt])
+  @@map("cache_entries")
+}
