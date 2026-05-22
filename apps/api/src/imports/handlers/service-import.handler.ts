@@ -1,4 +1,4 @@
-import { Decimal } from '../../../../../prisma/generated/prisma/runtime/library';
+import { Decimal } from '@/generated/prisma/runtime/library';
 import { PrismaService } from '../../prisma/prisma.service';
 import { ImportRowResult } from './client-import.handler';
 

@@ -12,7 +12,7 @@ import { ApiTags, ApiOperation, ApiResponse, ApiExcludeEndpoint } from '@nestjs/
 import { Throttle } from '@nestjs/throttler';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { PaymentStatus, Prisma } from '../../../../prisma/generated/prisma';
+import { PaymentStatus, Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { Public } from '../common/decorators/public.decorator';
 import { PaymentsService } from './payments.service';

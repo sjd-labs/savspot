@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { SlugService } from './slug.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';

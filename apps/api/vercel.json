@@ -1,14 +1,15 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "cd ../.. && pnpm turbo build --filter=@savspot/api...",
-  "installCommand": "cd ../.. && NODE_OPTIONS='--max-old-space-size=7000' pnpm install --filter=@savspot/api... --frozen-lockfile --ignore-scripts --child-concurrency=1",
+  "buildCommand": "node -e \"console.log('build skipped — dist/ pre-built externally')\"",
+  "installCommand": "node -e \"console.log('install skipped — node_modules supplied externally')\"",
   "rewrites": [
     { "source": "/(.*)", "destination": "/api/index" }
   ],
   "functions": {
-    "api/index.ts": {
+    "api/index.js": {
       "memory": 1024,
-      "maxDuration": 300
+      "maxDuration": 300,
+      "includeFiles": "{dist/**,src/generated/**,node_modules/google-auth-library/**,node_modules/gaxios/**,node_modules/gtoken/**,node_modules/googleapis-common/**,node_modules/google-logging-utils/**}"
     }
   }
 }

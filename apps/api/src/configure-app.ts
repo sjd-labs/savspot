@@ -1,13 +1,20 @@
 import { writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { apiReference } from '@scalar/nestjs-api-reference';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import { AllExceptionsFilter } from './common/filters/all-exceptions.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+
+// `@nestjs/swagger` and `@scalar/nestjs-api-reference` are loaded
+// dynamically inside the !isProduction && standalone block below.
+// A top-level import would always be evaluated at startup, but
+// @scalar's CJS build requires @scalar/client-side-rendering as ESM
+// (ERR_REQUIRE_ESM under Node 24's CJS), so the function fails before
+// reaching the gate. Decorators (@ApiProperty etc) on DTOs still need
+// @nestjs/swagger at runtime — that load happens elsewhere via the
+// decorator imports, not from this file.
 
 interface ConfigureAppOptions {
   /**
@@ -97,6 +104,11 @@ export async function configureApp(
   // Swagger (disabled in production, and skipped on serverless where the
   // OpenAPI dump to disk is meaningless because the FS is ephemeral).
   if (!isProduction && standalone) {
+    // Dynamic imports — see top-of-file comment for why these can't be
+    // top-level. Awaiting them is safe because configureApp() is async.
+    const { DocumentBuilder, SwaggerModule } = await import('@nestjs/swagger');
+    const { apiReference } = await import('@scalar/nestjs-api-reference');
+
     const swaggerConfig = new DocumentBuilder()
       .setTitle('SavSpot API')
       .setDescription('SavSpot multi-tenant booking platform API')

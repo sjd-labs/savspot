@@ -3,7 +3,7 @@ import {
   NotFoundException,
   Logger,
 } from '@nestjs/common';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { clampPageSize } from '../common/utils/pagination';
 import { ListTenantsDto } from './dto/list-tenants.dto';

@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { SearchDirectoryDto } from './dto/search-directory.dto';
 import { clampPageSize } from '../common/utils/pagination';

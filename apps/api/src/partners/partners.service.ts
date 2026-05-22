@@ -5,8 +5,8 @@ import {
   Logger,
 } from '@nestjs/common';
 import { randomBytes } from 'node:crypto';
-import { Decimal } from '../../../../prisma/generated/prisma/runtime/library';
-import { PartnerStatus, PartnerTier } from '../../../../prisma/generated/prisma';
+import { Decimal } from '@/generated/prisma/runtime/library';
+import { PartnerStatus, PartnerTier } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { ApplyPartnerDto } from './dto/apply-partner.dto';
 

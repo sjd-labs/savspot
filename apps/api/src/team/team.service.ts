@@ -9,7 +9,7 @@ import { randomUUID } from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { InviteMemberDto } from './dto/invite-member.dto';
-import { TenantRole, InvitationStatus } from '../../../../prisma/generated/prisma';
+import { TenantRole, InvitationStatus } from '@/generated/prisma';
 
 @Injectable()
 export class TeamService {

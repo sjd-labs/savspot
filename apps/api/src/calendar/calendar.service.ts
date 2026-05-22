@@ -6,11 +6,11 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as crypto from 'crypto';
-import { google, calendar_v3 } from 'googleapis';
+import { auth, calendar, calendar_v3 } from '@googleapis/calendar';
 
-/** OAuth2Client type extracted from googleapis */
-type OAuth2Client = InstanceType<typeof google.auth.OAuth2>;
-import { Prisma } from '../../../../prisma/generated/prisma';
+/** OAuth2Client type extracted from @googleapis/calendar's auth module. */
+type OAuth2Client = InstanceType<typeof auth.OAuth2>;
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { RedisService } from '../redis/redis.service';
 import { JobDispatcher } from '../bullmq/job-dispatcher.service';
@@ -140,7 +140,7 @@ export class GoogleCalendarService {
     oauth2Client.setCredentials(tokens);
     let syncCalendars: Prisma.InputJsonValue = [];
     try {
-      const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+      const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
       const listRes = await calendarApi.calendarList.list();
       syncCalendars = (listRes.data.items || []).map((cal) => ({
         id: cal.id,
@@ -234,7 +234,7 @@ export class GoogleCalendarService {
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
 
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
     const res = await calendarApi.calendarList.list();
 
     return (res.data.items || []).map((cal) => ({
@@ -374,7 +374,7 @@ export class GoogleCalendarService {
   ): Promise<string> {
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
 
     const timeZone = eventData.timeZone || 'UTC';
 
@@ -437,7 +437,7 @@ export class GoogleCalendarService {
   ): Promise<void> {
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
 
     const timeZone = eventData.timeZone || 'UTC';
 
@@ -495,7 +495,7 @@ export class GoogleCalendarService {
   ): Promise<void> {
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
 
     try {
       await calendarApi.events.delete({
@@ -537,7 +537,7 @@ export class GoogleCalendarService {
   ): Promise<{ added: number; updated: number; deleted: number }> {
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
 
     // Determine which calendars to sync
     const syncCalendars = this.getSyncCalendarIds(connection);
@@ -588,7 +588,7 @@ export class GoogleCalendarService {
 
     const connection = await this.getActiveConnection(connectionId);
     const oauth2Client = await this.getAuthenticatedClient(connection);
-    const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+    const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
 
     const channelId = crypto.randomUUID();
     const watchRes = await calendarApi.events.watch({
@@ -668,7 +668,7 @@ export class GoogleCalendarService {
     // Stop the old channel first
     try {
       const oauth2Client = await this.getAuthenticatedClient(connection);
-      const calendarApi = google.calendar({ version: 'v3', auth: oauth2Client });
+      const calendarApi = calendar({ version: 'v3', auth: oauth2Client });
       await calendarApi.channels.stop({
         requestBody: {
           id: watchMeta.channelId,
@@ -800,7 +800,7 @@ export class GoogleCalendarService {
   // ---------------------------------------------------------------------------
 
   private createOAuth2Client(): OAuth2Client {
-    return new google.auth.OAuth2(
+    return new auth.OAuth2(
       this.clientId,
       this.clientSecret,
       this.redirectUri,

@@ -16,7 +16,7 @@ import {
   ApiBearerAuth,
   ApiQuery,
 } from '@nestjs/swagger';
-import { NoteEntityType } from '../../../../prisma/generated/prisma';
+import { NoteEntityType } from '@/generated/prisma';
 import { TenantRoles } from '../common/decorators/tenant-roles.decorator';
 import { TenantRolesGuard } from '../common/guards/tenant-roles.guard';
 import { CurrentUser } from '../common/decorators/current-user.decorator';

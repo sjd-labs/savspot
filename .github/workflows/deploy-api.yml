@@ -17,8 +17,12 @@ jobs:
   deploy:
     name: Deploy API to Vercel
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     if: github.event.workflow_run.conclusion == 'success' && github.repository == 'sjd-labs/savspot'
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
+      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,30 +43,15 @@ jobs:
       - name: Install Vercel CLI
         run: pnpm add -g vercel@latest
 
-      # Vercel's own build container is 8 GB and OOMs on this monorepo's
-      # pnpm install. We do the install + build on the GitHub runner
-      # (16 GB) and ship the prebuilt output, which avoids the OOM
-      # entirely and is also faster (CI lockfile cache reuse).
-      - name: Install workspace deps
-        run: pnpm install --frozen-lockfile
-
+      # Vercel's 8 GB build container OOMs on this monorepo's pnpm install,
+      # and Vercel's NFT silently tags @savspot/* workspace deps with an
+      # `.ignored_` prefix so they never ship. scripts/vercel-build.sh
+      # works around both by doing install + build + pnpm-deploy on the
+      # 16 GB GitHub runner, then shipping the prebuilt .vercel/output.
       - name: Pull Vercel project settings
         working-directory: apps/api
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
-      - name: Build api bundle
+      - name: Build + deploy via prebuilt
         working-directory: apps/api
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
-        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
-
-      - name: Deploy prebuilt to Vercel
-        working-directory: apps/api
-        env:
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
-        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: ./scripts/vercel-build.sh --deploy

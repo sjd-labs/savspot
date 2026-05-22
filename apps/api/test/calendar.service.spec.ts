@@ -36,29 +36,27 @@ const {
   mockChannelsStop: vi.fn(),
 }));
 
-vi.mock('googleapis', () => ({
-  google: {
-    auth: {
-      OAuth2: vi.fn().mockImplementation(() => ({
-        generateAuthUrl: mockGenerateAuthUrl,
-        getToken: mockGetToken,
-        revokeToken: mockRevokeToken,
-        setCredentials: mockSetCredentials,
-        refreshAccessToken: mockRefreshAccessToken,
-      })),
-    },
-    calendar: vi.fn().mockReturnValue({
-      calendarList: { list: mockCalendarListList },
-      events: {
-        insert: mockEventsInsert,
-        patch: mockEventsPatch,
-        delete: mockEventsDelete,
-        list: mockEventsList,
-        watch: mockEventsWatch,
-      },
-      channels: { stop: mockChannelsStop },
-    }),
+vi.mock('@googleapis/calendar', () => ({
+  auth: {
+    OAuth2: vi.fn().mockImplementation(() => ({
+      generateAuthUrl: mockGenerateAuthUrl,
+      getToken: mockGetToken,
+      revokeToken: mockRevokeToken,
+      setCredentials: mockSetCredentials,
+      refreshAccessToken: mockRefreshAccessToken,
+    })),
   },
+  calendar: vi.fn().mockReturnValue({
+    calendarList: { list: mockCalendarListList },
+    events: {
+      insert: mockEventsInsert,
+      patch: mockEventsPatch,
+      delete: mockEventsDelete,
+      list: mockEventsList,
+      watch: mockEventsWatch,
+    },
+    channels: { stop: mockChannelsStop },
+  }),
 }));
 
 import * as crypto from 'crypto';

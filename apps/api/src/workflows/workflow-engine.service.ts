@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OnEvent } from '@nestjs/event-emitter';
-import { TenantRole, WorkflowTriggerEvent } from '../../../../prisma/generated/prisma';
+import { TenantRole, WorkflowTriggerEvent } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { CommunicationsService, CreateAndSendParams } from '../communications/communications.service';
 import { SmsService } from '../sms/sms.service';

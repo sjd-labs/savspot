@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { DataRequestStatus } from '../../../../prisma/generated/prisma';
+import { DataRequestStatus } from '@/generated/prisma';
 import { UploadService } from '../upload/upload.service';
 
 export const JOB_PROCESS_DATA_EXPORT = 'processDataExportRequest';

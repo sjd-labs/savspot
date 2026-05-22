@@ -4,7 +4,7 @@ import {
   ForbiddenException,
   Logger,
 } from '@nestjs/common';
-import { NoteEntityType } from '../../../../prisma/generated/prisma';
+import { NoteEntityType } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { clampPageSize } from '../common/utils/pagination';
 import { CreateNoteDto } from './dto/create-note.dto';

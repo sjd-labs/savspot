@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsNumber } from 'class-validator';
-import { PartnerStatus } from '../../../../../prisma/generated/prisma';
+import { PartnerStatus } from '@/generated/prisma';
 
 const UPDATABLE_STATUSES = [
   PartnerStatus.APPROVED,

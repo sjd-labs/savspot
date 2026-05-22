@@ -8,7 +8,7 @@ import {
   WorkflowTriggerEvent,
   AutomationExecutionStatus,
   Prisma,
-} from '../../../../../prisma/generated/prisma';
+} from '@/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 
 interface StageResultEntry {

@@ -1,4 +1,4 @@
-import { PrismaClient } from '../../../../prisma/generated/prisma';
+import { PrismaClient } from '@/generated/prisma';
 
 /**
  * Models that have a tenant_id column and should be scoped by tenant.

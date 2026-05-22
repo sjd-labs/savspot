@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Decimal } from '../../../../prisma/generated/prisma/runtime/library';
-import { PartnerStatus, PayoutStatus } from '../../../../prisma/generated/prisma';
+import { Decimal } from '@/generated/prisma/runtime/library';
+import { PartnerStatus, PayoutStatus } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 
 const PAYOUT_THRESHOLD = new Decimal(50);

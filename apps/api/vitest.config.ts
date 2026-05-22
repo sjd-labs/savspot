@@ -21,16 +21,21 @@ export default defineConfig({
     },
   },
   resolve: {
+    // Order matters: longer/more-specific aliases first so `@/generated/...`
+    // resolves to the mocks before the broader `@` alias re-points at ./src
+    // (which would otherwise hit the real generated client and break tests).
     alias: {
-      '@': path.resolve(__dirname, './src'),
-      '../../../../prisma/generated/prisma/runtime/library': path.resolve(
+      '@/generated/prisma/runtime/library': path.resolve(
         __dirname,
         './test/__mocks__/prisma-runtime.ts',
       ),
-      '../../../../prisma/generated/prisma': path.resolve(
+      '@/generated/prisma': path.resolve(
         __dirname,
         './test/__mocks__/prisma-generated.ts',
       ),
+      '@savspot/shared': path.resolve(__dirname, './src/shared/index.ts'),
+      '@savspot/ee': path.resolve(__dirname, './src/ee/index.ts'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });

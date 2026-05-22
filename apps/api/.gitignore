@@ -1,1 +1,4 @@
 .vercel
+# Prisma client emits to apps/api/src/generated/prisma/ now (moved here
+# from prisma/generated/ so Vercel's function bundler can include it).
+src/generated/

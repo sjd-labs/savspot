@@ -6,7 +6,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, TicketCategory, TicketSeverity, TicketStatus, ResolvedBy } from '../../../../prisma/generated/prisma';
+import { Prisma, TicketCategory, TicketSeverity, TicketStatus, ResolvedBy } from '@/generated/prisma';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import { QUEUE_COMMUNICATIONS, JOB_SUPPORT_TRIAGE } from '../bullmq/queue.constants';

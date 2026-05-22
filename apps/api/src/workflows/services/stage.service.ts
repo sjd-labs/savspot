@@ -9,7 +9,7 @@ import {
   WorkflowStageTriggerTime,
   WorkflowStageProgressionCondition,
   Prisma,
-} from '../../../../../prisma/generated/prisma';
+} from '@/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateStageDto } from '../dto/create-stage.dto';
 import { UpdateStageDto } from '../dto/update-stage.dto';

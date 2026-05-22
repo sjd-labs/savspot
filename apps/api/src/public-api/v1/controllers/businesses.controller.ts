@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { Prisma } from '../../../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { Public } from '../../../common/decorators/public.decorator';
 import { UuidValidationPipe } from '../../../common/pipes/uuid-validation.pipe';

@@ -5,7 +5,7 @@ import {
   TicketStatus,
   AIResolutionType,
   ResolvedBy,
-} from '../../../../prisma/generated/prisma';
+} from '@/generated/prisma';
 
 export interface TriagePayload {
   ticketId: string;

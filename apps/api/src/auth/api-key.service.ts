@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
 import { PrismaService } from '../prisma/prisma.service';
-import type { ApiKey, Prisma } from '../../../../prisma/generated/prisma';
+import type { ApiKey, Prisma } from '@/generated/prisma';
 
 /** Format: svs_{6-char-prefix}_{64-char-hex-secret} */
 const KEY_PREFIX_LENGTH = 6;

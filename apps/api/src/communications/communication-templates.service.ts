@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma, CommunicationChannel } from '../../../../prisma/generated/prisma';
+import { Prisma, CommunicationChannel } from '@/generated/prisma';
 import { sanitizeTemplate } from './template-sandbox';
 import { TEMPLATE_VARIABLE_REGISTRY } from './template-variables';
 

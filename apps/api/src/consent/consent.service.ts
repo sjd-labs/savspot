@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { ConsentPurpose } from '../../../../prisma/generated/prisma';
+import { ConsentPurpose } from '@/generated/prisma';
 
 @Injectable()
 export class ConsentService {

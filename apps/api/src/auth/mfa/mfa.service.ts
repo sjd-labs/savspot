@@ -12,7 +12,7 @@ import {
   createDecipheriv,
 } from 'crypto';
 import * as bcrypt from 'bcryptjs';
-import { Prisma } from '../../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { TokenService, JwtPayload } from '../services/token.service';
 

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Prisma, RiskLevel } from '../../../../prisma/generated/prisma';
+import { Prisma, RiskLevel } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 
 interface ChurnRiskRow {

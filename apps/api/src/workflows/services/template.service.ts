@@ -2,7 +2,7 @@ import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import {
   WorkflowTriggerEvent,
   Prisma,
-} from '../../../../../prisma/generated/prisma';
+} from '@/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateWorkflowTemplateDto } from '../dto/create-template.dto';
 import { UpdateWorkflowTemplateDto } from '../dto/update-template.dto';

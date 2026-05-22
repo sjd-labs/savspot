@@ -1,5 +1,5 @@
 import { IsString, IsEnum, IsOptional, IsUrl } from 'class-validator';
-import { PartnerType } from '../../../../../prisma/generated/prisma';
+import { PartnerType } from '@/generated/prisma';
 
 export class ApplyPartnerDto {
   @IsEnum(PartnerType)

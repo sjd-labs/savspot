@@ -10,7 +10,7 @@ import {
   createCipheriv,
   createDecipheriv,
 } from 'node:crypto';
-import { Prisma } from '../../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateWebhookDto } from '../dto/create-webhook.dto';
 import { UpdateWebhookDto } from '../dto/update-webhook.dto';

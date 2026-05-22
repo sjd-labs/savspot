@@ -9,7 +9,9 @@
     "rootDir": ".",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@savspot/shared": ["src/shared"],
+      "@savspot/ee": ["src/ee"]
     }
   },
   "include": ["src/**/*", "test/**/*"]

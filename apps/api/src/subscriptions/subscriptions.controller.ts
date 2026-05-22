@@ -22,7 +22,7 @@ import {
 } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { TenantRoles } from '../common/decorators/tenant-roles.decorator';
 import { TenantRolesGuard } from '../common/guards/tenant-roles.guard';

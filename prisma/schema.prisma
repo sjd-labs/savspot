@@ -5,7 +5,15 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "./generated/prisma"
+  // Output the generated client into apps/api/ so Vercel's function bundling
+  // (which traces paths from the function root) can include it. Previously
+  // output to ./generated/prisma which resolves to <repo>/prisma/generated/
+  // — outside apps/api, so Vercel couldn't ship it with the function.
+  output   = "../apps/api/src/generated/prisma"
+  // Vercel/AWS Lambda runs on Amazon Linux (rhel-openssl-3.0.x). Local dev
+  // and Fly used debian-openssl-3.0.x ("native"). Include both so the
+  // generated client carries the matching query-engine binary for each.
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 generator dbml {

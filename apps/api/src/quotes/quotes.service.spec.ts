@@ -3,7 +3,7 @@ import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { QuotesService } from './quotes.service';
 
 // Mock the Decimal import
-vi.mock('../../../../prisma/generated/prisma/runtime/library', () => ({
+vi.mock('@/generated/prisma/runtime/library', () => ({
   Decimal: class MockDecimal {
     private value: number;
     constructor(val: number | string) {

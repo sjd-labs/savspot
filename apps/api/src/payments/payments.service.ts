@@ -5,7 +5,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { BookingSource, BookingStatus, PaymentStatus, Prisma } from '../../../../prisma/generated/prisma';
+import { BookingSource, BookingStatus, PaymentStatus, Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { StripeProvider } from './providers/stripe.provider';
 import { EventsService } from '../events/events.service';

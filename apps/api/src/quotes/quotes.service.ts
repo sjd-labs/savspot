@@ -4,8 +4,8 @@ import {
   BadRequestException,
   Logger,
 } from '@nestjs/common';
-import { Decimal } from '../../../../prisma/generated/prisma/runtime/library';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Decimal } from '@/generated/prisma/runtime/library';
+import { Prisma } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { CreateQuoteLineItemDto } from './dto/create-quote-line-item.dto';

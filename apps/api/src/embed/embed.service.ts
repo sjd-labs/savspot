@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BookingSource } from '../../../../prisma/generated/prisma';
+import { BookingSource } from '@/generated/prisma';
 import { PrismaService } from '../prisma/prisma.service';
 import { AvailabilityService } from '../availability/availability.service';
 import { CreateEmbedSessionDto } from './dto/create-embed-session.dto';

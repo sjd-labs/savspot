@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Request } from 'express';
-import { AuditAction, ActorType } from '../../../../prisma/generated/prisma';
+import { AuditAction, ActorType } from '@/generated/prisma';
 import { AuditService } from './audit.service';
 import { AUDIT_ACTION_KEY } from './audit.decorator';
 

@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '../../../../prisma/generated/prisma';
+import { Prisma } from '@/generated/prisma';
 import { ComposeMessageDto, ComposeChannel } from './dto/compose-message.dto';
 import { JobDispatcher } from '../bullmq/job-dispatcher.service';
 import { QUEUE_COMMUNICATIONS, JOB_DELIVER_COMMUNICATION, JOB_DELIVER_PROVIDER_SMS } from '../bullmq/queue.constants';

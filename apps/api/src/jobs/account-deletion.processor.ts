@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { DataRequestType, DataRequestStatus, Prisma } from '../../../../prisma/generated/prisma';
+import { DataRequestType, DataRequestStatus, Prisma } from '@/generated/prisma';
 
 export const JOB_PROCESS_ACCOUNT_DELETION = 'processAccountDeletion';
 

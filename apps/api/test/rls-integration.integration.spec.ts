@@ -19,7 +19,7 @@
  * 3. Use the `app_user` for all application queries
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { PrismaClient } from '../../../prisma/generated/prisma';
+import { PrismaClient } from '@/generated/prisma';
 import { withTenantExtension } from '../src/prisma/prisma-tenant.extension';
 
 const TENANT_A = '00000000-0000-4000-b000-000000000001'; // From seed helpers
