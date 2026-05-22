@@ -7,9 +7,11 @@ import { CommunicationTemplatesController } from './communication-templates.cont
 import { CommunicationTemplatesService } from './communication-templates.service';
 import { CommunicationsComposeController } from './communications-compose.controller';
 import { CommunicationsLogController } from './communications-log.controller';
+import { CommunicationsUsageController } from './communications-usage.controller';
 import { PreferenceCenterController } from './preference-center.controller';
 import { CommunicationsComposeService } from './communications-compose.service';
 import { CommunicationsLogService } from './communications-log.service';
+import { CommunicationsUsageService } from './communications-usage.service';
 import { PreferenceCenterService } from './preference-center.service';
 import { SmsModule } from '../sms/sms.module';
 import { BrowserPushModule } from '../browser-push/browser-push.module';
@@ -28,6 +30,7 @@ import { ComputeClientInsightsHandler } from '../jobs/compute-client-insights.pr
     CommunicationTemplatesController,
     CommunicationsComposeController,
     CommunicationsLogController,
+    CommunicationsUsageController,
     PreferenceCenterController,
   ],
   providers: [
@@ -41,6 +44,7 @@ import { ComputeClientInsightsHandler } from '../jobs/compute-client-insights.pr
     CircuitBreaker,
     CommunicationsComposeService,
     CommunicationsLogService,
+    CommunicationsUsageService,
     PreferenceCenterService,
   ],
   exports: [
