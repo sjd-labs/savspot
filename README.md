@@ -16,11 +16,20 @@
 
 ---
 
-## Project status
+## About this project
 
-**SavSpot is an open-source booking platform built for self-hosters.** It is maintained as an open-source project; the reference deployment at [savspot.co](https://savspot.co) keeps the live demo running but is **not currently accepting new managed-hosting signups**. If you want to run SavSpot for your business, [self-host it](docs/self-hosting.md) &mdash; the full source is here and runs comfortably on a small VPS.
+**SavSpot is a production-grade multi-tenant booking platform whose code, architecture decisions, legal pages, and deploy infrastructure were produced via Claude under scoped product direction.** It is deployed live at [savspot.co](https://savspot.co) with a working demo, but managed signups are deliberately closed &mdash; the goal is to demonstrate what disciplined AI-collaborative engineering can ship when paired with strong product and operational judgment, not to operate a hosted business.
 
-Existing accounts on `savspot.co` can still sign in. Issues and pull requests are welcome but maintenance attention is best-effort.
+See [`docs/process.md`](docs/process.md) for the collaboration patterns that worked, the experiments that didn't, and the heuristics that survived.
+
+### Project status
+
+- ✅ **Live demo** at [savspot.co/book/demo-barbershop](https://savspot.co/book/demo-barbershop) &mdash; full booking flow, no signup required
+- ✅ **Open source** under AGPL-3.0; self-host with the [setup guide](docs/self-hosting.md)
+- ❌ **Managed signups closed** &mdash; new accounts at `savspot.co` are not being accepted
+- ⚠️ **Best-effort maintenance** &mdash; issues and PRs welcome, attention is not guaranteed
+
+If you want to run SavSpot for your business, [self-host it](docs/self-hosting.md). The full source is here and runs on a small VPS.
 
 ---
 
