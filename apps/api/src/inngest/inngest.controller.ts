@@ -190,9 +190,15 @@ export class InngestController {
     private readonly retryFailedPaymentsHandler: RetryFailedPaymentsHandler,
     private readonly cacheKv: RedisService,
   ) {
+    // Portfolio-mode kill switch: when MANAGED_HOSTING_CLOSED, register only
+    // `ping` so Inngest doesn't keep firing crons (every-5-min, every-15-min,
+    // hourly, daily) against an instance with zero tenants. This zeroes out
+    // ongoing Inngest + Vercel + DB cost without removing any code — flip
+    // the env var back to re-enable the full schedule.
+    const closed = process.env['MANAGED_HOSTING_CLOSED'] === 'true';
     this.handler = serve({
       client: inngest,
-      functions: [
+      functions: closed ? [ping] : [
         ping,
         createRefreshRatesFunction(this.currencyService),
         createDirectoryListingRefreshFunction(this.directoryListingService),

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { MANAGED_HOSTING_CLOSED, SELF_HOST_GITHUB_URL } from '@/lib/managed-hosting';
 import {
   Building2,
   Scissors,
@@ -202,6 +203,21 @@ function FeatureExpander() {
 }
 
 export default function Home() {
+  // Portfolio-mode posture: when managed hosting is closed, route every
+  // "sign up" CTA to the self-host GitHub repo instead.
+  const primaryCtaHref = MANAGED_HOSTING_CLOSED ? SELF_HOST_GITHUB_URL : '/register';
+  const primaryCtaLabel = MANAGED_HOSTING_CLOSED
+    ? 'Self-host on GitHub'
+    : 'Get Started Free';
+  const tierCtaLabel = MANAGED_HOSTING_CLOSED ? 'Self-host on GitHub' : 'Start Free Trial';
+  const finalCtaLabel = MANAGED_HOSTING_CLOSED
+    ? 'Clone the repo'
+    : 'Create Your Free Booking Page';
+  const finalCtaSubcopy = MANAGED_HOSTING_CLOSED
+    ? 'Managed hosting is closed. Source is on GitHub — clone and run your own.'
+    : 'Join service businesses already using SavSpot to manage their schedule, payments, and clients — all in one place.';
+  const primaryCtaIsExternal = MANAGED_HOSTING_CLOSED;
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -236,10 +252,11 @@ export default function Home() {
               Sign In
             </Link>
             <Link
-              href="/register"
+              href={primaryCtaHref}
+              {...(primaryCtaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
             >
-              Get Started Free
+              {primaryCtaLabel}
             </Link>
           </div>
         </nav>
@@ -281,10 +298,11 @@ export default function Home() {
             </p>
             <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
-                href="/register"
+                href={primaryCtaHref}
+                {...(primaryCtaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_20px_var(--glow-accent)] transition-all hover:shadow-[0_0_30px_var(--glow-accent)] hover:brightness-105"
               >
-                Get Started Free
+                {primaryCtaLabel}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
@@ -512,10 +530,11 @@ export default function Home() {
                   ))}
                 </ul>
                 <Link
-                  href="/register"
+                  href={primaryCtaHref}
+                  {...(primaryCtaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-lg bg-primary text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
                 >
-                  Start Free Trial
+                  {tierCtaLabel}
                 </Link>
               </div>
 
@@ -548,10 +567,11 @@ export default function Home() {
                   ))}
                 </ul>
                 <Link
-                  href="/register"
+                  href={primaryCtaHref}
+                  {...(primaryCtaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="mt-8 inline-flex h-11 w-full items-center justify-center rounded-lg bg-accent text-sm font-medium text-accent-foreground shadow-[0_0_12px_var(--glow-accent)] transition-all hover:shadow-[0_0_20px_var(--glow-accent)] hover:brightness-105"
                 >
-                  Start Free Trial
+                  {tierCtaLabel}
                 </Link>
               </div>
 
@@ -619,14 +639,15 @@ export default function Home() {
               Your next booking is 5 minutes away.
             </h2>
             <p className="mt-3 text-primary-foreground/80">
-              Join service businesses already using SavSpot to manage their schedule, payments, and clients — all in one place.
+              {finalCtaSubcopy}
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Link
-                href="/register"
+                href={primaryCtaHref}
+                {...(primaryCtaIsExternal ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                 className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_24px_var(--glow-accent)] transition-all hover:shadow-[0_0_36px_var(--glow-accent)] hover:brightness-105"
               >
-                Create Your Free Booking Page
+                {finalCtaLabel}
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Link>
               <a
@@ -676,7 +697,22 @@ export default function Home() {
               <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Account</p>
               <ul className="mt-3 space-y-2">
                 <li><Link href="/login" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Sign In</Link></li>
-                <li><Link href="/register" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Get Started</Link></li>
+                <li>
+                  {MANAGED_HOSTING_CLOSED ? (
+                    <a
+                      href={SELF_HOST_GITHUB_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    >
+                      Self-host
+                    </a>
+                  ) : (
+                    <Link href="/register" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                      Get Started
+                    </Link>
+                  )}
+                </li>
               </ul>
             </div>
             <div>

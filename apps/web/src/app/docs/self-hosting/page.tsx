@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { MANAGED_HOSTING_CLOSED, SELF_HOST_GITHUB_URL } from '@/lib/managed-hosting';
 import {
   ArrowRight,
   Github,
@@ -78,12 +79,23 @@ export default function SelfHostingPage() {
             >
               Sign In
             </Link>
-            <Link
-              href="/register"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
-            >
-              Start Free Trial
-            </Link>
+            {MANAGED_HOSTING_CLOSED ? (
+              <a
+                href={SELF_HOST_GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
+              >
+                Self-host on GitHub
+              </a>
+            ) : (
+              <Link
+                href="/register"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
+              >
+                Start Free Trial
+              </Link>
+            )}
           </div>
         </nav>
       </header>
@@ -524,13 +536,15 @@ $ docker compose -f docker-compose.prod.yml exec web \\
                 <Github className="mr-2 h-5 w-5" />
                 Clone on GitHub
               </a>
-              <Link
-                href="/register"
-                className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/20 px-8 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
-              >
-                Start Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              {!MANAGED_HOSTING_CLOSED && (
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-primary-foreground/20 px-8 text-base font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/10"
+                >
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              )}
             </div>
           </div>
         </section>

@@ -3,7 +3,7 @@
   <p align="center">
     Open-source booking platform for service businesses
     <br />
-    <a href="https://savspot.co/book/demo-barbershop">Live Demo</a> &middot; <a href="https://savspot.co">Cloud</a> &middot; <a href="docs/self-hosting.md">Self-Host</a> &middot; <a href="https://github.com/sjd-labs/savspot/issues">Issues</a>
+    <a href="https://savspot.co/book/demo-barbershop">Live Demo</a> &middot; <a href="docs/self-hosting.md">Self-Host</a> &middot; <a href="https://github.com/sjd-labs/savspot/issues">Issues</a>
   </p>
 </p>
 
@@ -16,9 +16,17 @@
 
 ---
 
-SavSpot is a multi-tenant booking platform built for salons, barbershops, studios, fitness centers, and other service businesses. It handles the full booking lifecycle — from public booking pages to payment processing, calendar management, and client communications.
+## Project status
 
-Self-host it with Docker or use the managed cloud at [savspot.co](https://savspot.co).
+**SavSpot is an open-source booking platform built for self-hosters.** It is maintained as an open-source project; the reference deployment at [savspot.co](https://savspot.co) keeps the live demo running but is **not currently accepting new managed-hosting signups**. If you want to run SavSpot for your business, [self-host it](docs/self-hosting.md) &mdash; the full source is here and runs comfortably on a small VPS.
+
+Existing accounts on `savspot.co` can still sign in. Issues and pull requests are welcome but maintenance attention is best-effort.
+
+---
+
+SavSpot is a multi-tenant booking platform built for salons, barbershops, studios, fitness centers, and other service businesses. It handles the full booking lifecycle &mdash; from public booking pages to payment processing, calendar management, and client communications.
+
+Run it on your own infrastructure with Docker; see [`docs/self-hosting.md`](docs/self-hosting.md) for the setup walkthrough.
 
 ## Features
 

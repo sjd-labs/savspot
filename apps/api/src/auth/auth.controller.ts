@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  GoneException,
   Logger,
 } from '@nestjs/common';
 import {
@@ -95,10 +96,24 @@ export class AuthController {
   @Public()
   @Post('register')
   @Throttle({ default: { limit: 3, ttl: 60_000 } })
-  @ApiOperation({ summary: 'Register a new user' })
+  @ApiOperation({
+    summary: 'Register a new user (gated by MANAGED_HOSTING_CLOSED env var)',
+    description:
+      'When the SavSpot operator has set MANAGED_HOSTING_CLOSED=true, this endpoint returns 410 Gone with a self-host pointer. The full code path remains intact for self-hosters who want their own managed-hosting offering to be open.',
+  })
   @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 409, description: 'Email already registered' })
+  @ApiResponse({ status: 410, description: 'Managed-hosting signups are closed on this instance' })
   async register(@Body() dto: RegisterDto) {
+    const closed = this.configService.get<string>('MANAGED_HOSTING_CLOSED') === 'true';
+    if (closed) {
+      throw new GoneException({
+        message:
+          'New managed-hosting signups are not being accepted on this instance. SavSpot is open-source — clone https://github.com/sjd-labs/savspot to self-host.',
+        code: 'MANAGED_HOSTING_CLOSED',
+        selfHostUrl: 'https://github.com/sjd-labs/savspot',
+      });
+    }
     await this.authService.register(dto);
     return { message: 'Registration successful. Please check your email to verify your account.' };
   }

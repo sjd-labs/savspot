@@ -4,9 +4,11 @@ import {
   ArrowRight,
   CheckCircle2,
   Github,
+  Info,
   Terminal,
   X,
 } from 'lucide-react';
+import { MANAGED_HOSTING_CLOSED, SELF_HOST_GITHUB_URL } from '@/lib/managed-hosting';
 
 export const metadata: Metadata = {
   title: 'Pricing — SavSpot',
@@ -46,9 +48,9 @@ const PLANS = [
     description: '1 staff member. Everything you need to start booking. 14-day free trial.',
     badge: null,
     cta: {
-      label: 'Start Free Trial',
-      href: '/register',
-      external: false,
+      label: MANAGED_HOSTING_CLOSED ? 'Self-host on GitHub' : 'Start Free Trial',
+      href: MANAGED_HOSTING_CLOSED ? SELF_HOST_GITHUB_URL : '/register',
+      external: MANAGED_HOSTING_CLOSED,
       variant: 'primary' as const,
     },
     highlight: false,
@@ -61,9 +63,9 @@ const PLANS = [
     description: 'For growing businesses with multiple staff. All features unlocked.',
     badge: 'Most Popular',
     cta: {
-      label: 'Start Free Trial',
-      href: '/register',
-      external: false,
+      label: MANAGED_HOSTING_CLOSED ? 'Self-host on GitHub' : 'Start Free Trial',
+      href: MANAGED_HOSTING_CLOSED ? SELF_HOST_GITHUB_URL : '/register',
+      external: MANAGED_HOSTING_CLOSED,
       variant: 'accent' as const,
     },
     highlight: true,
@@ -252,12 +254,23 @@ export default function PricingPage() {
             >
               Sign In
             </Link>
-            <Link
-              href="/register"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
-            >
-              Start Free Trial
-            </Link>
+            {MANAGED_HOSTING_CLOSED ? (
+              <a
+                href={SELF_HOST_GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
+              >
+                Self-host on GitHub
+              </a>
+            ) : (
+              <Link
+                href="/register"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-medium text-accent-foreground shadow-[var(--shadow-colored)] transition-all hover:shadow-[var(--glow-accent)] hover:brightness-105"
+              >
+                Start Free Trial
+              </Link>
+            )}
           </div>
         </nav>
       </header>
@@ -271,8 +284,29 @@ export default function PricingPage() {
               Simple, honest pricing
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-              Self-host for free or let us handle the infrastructure. All cloud plans include a 14-day free trial — no credit card required.
+              {MANAGED_HOSTING_CLOSED
+                ? 'SavSpot is open-source — self-host for free with the full feature set. Managed cloud signups are currently closed; the tiers below describe what hosted plans would include if you ran your own managed instance.'
+                : 'Self-host for free or let us handle the infrastructure. All cloud plans include a 14-day free trial — no credit card required.'}
             </p>
+            {MANAGED_HOSTING_CLOSED && (
+              <div className="mx-auto mt-6 inline-flex max-w-2xl items-start gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-left text-sm text-blue-900 dark:border-blue-800 dark:bg-blue-950/50 dark:text-blue-100">
+                <Info className="mt-0.5 h-4 w-4 shrink-0" />
+                <p>
+                  Managed cloud hosting at <code>savspot.co</code> is not
+                  currently accepting new accounts. SavSpot is open-source and
+                  fully self-hostable &mdash;{' '}
+                  <a
+                    href={SELF_HOST_GITHUB_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-medium underline hover:no-underline"
+                  >
+                    clone the repository
+                  </a>{' '}
+                  to run any of these tiers on your own infrastructure.
+                </p>
+              </div>
+            )}
           </div>
         </section>
 
@@ -471,19 +505,33 @@ export default function PricingPage() {
           <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary/80" />
           <div className="relative mx-auto max-w-2xl px-4 py-16 text-center sm:py-20">
             <h2 className="text-2xl font-bold tracking-tight text-primary-foreground sm:text-3xl">
-              Ready to get started?
+              {MANAGED_HOSTING_CLOSED ? 'Ready to self-host?' : 'Ready to get started?'}
             </h2>
             <p className="mt-3 text-primary-foreground/80">
-              Start your 14-day free trial or self-host on your own infrastructure.
+              {MANAGED_HOSTING_CLOSED
+                ? 'SavSpot is open-source. Clone the repository, run it on your own infrastructure, and own the whole stack.'
+                : 'Start your 14-day free trial or self-host on your own infrastructure.'}
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-              <Link
-                href="/register"
-                className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_24px_var(--glow-accent)] transition-all hover:shadow-[0_0_36px_var(--glow-accent)] hover:brightness-105"
-              >
-                Start Free Trial
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+              {MANAGED_HOSTING_CLOSED ? (
+                <a
+                  href={SELF_HOST_GITHUB_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_24px_var(--glow-accent)] transition-all hover:shadow-[0_0_36px_var(--glow-accent)] hover:brightness-105"
+                >
+                  Clone the repo
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </a>
+              ) : (
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-accent px-8 text-base font-medium text-accent-foreground shadow-[0_0_24px_var(--glow-accent)] transition-all hover:shadow-[0_0_36px_var(--glow-accent)] hover:brightness-105"
+                >
+                  Start Free Trial
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              )}
               <a
                 href="https://github.com/sjd-labs/savspot"
                 target="_blank"

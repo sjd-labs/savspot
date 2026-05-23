@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, Mail, Phone, ShieldCheck, CalendarX2, Star, Info } from 'lucide-react';
 import { BUSINESS_CATEGORY_LABELS, DEMO_TENANT_SLUG } from '@savspot/shared';
+import { MANAGED_HOSTING_CLOSED, SELF_HOST_GITHUB_URL } from '@/lib/managed-hosting';
 import { Badge } from '@savspot/ui';
 import type { TenantData } from '@/components/booking/booking-types';
 import { buildJsonLd } from './helpers';
@@ -228,9 +229,24 @@ export default async function BookingPage({
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           <p>
             This is a demo booking page. Explore the full booking flow freely.{' '}
-            <Link href="/register" className="font-medium underline hover:no-underline">
-              Create your own free booking page &rarr;
-            </Link>
+            {MANAGED_HOSTING_CLOSED ? (
+              <>
+                Managed hosting is currently closed &mdash; SavSpot is
+                open-source and{' '}
+                <a
+                  href={SELF_HOST_GITHUB_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium underline hover:no-underline"
+                >
+                  fully self-hostable &rarr;
+                </a>
+              </>
+            ) : (
+              <Link href="/register" className="font-medium underline hover:no-underline">
+                Create your own free booking page &rarr;
+              </Link>
+            )}
           </p>
         </div>
       )}
