@@ -49,7 +49,11 @@ export class AuthController {
     private readonly prisma: PrismaService,
   ) {}
 
-  private setAuthCookies(res: Response, tokens: { accessToken: string; refreshToken: string }) {
+  private setAuthCookies(
+    res: Response,
+    tokens: { accessToken: string; refreshToken: string },
+    accessMaxAgeSeconds = 900,
+  ) {
     const isProduction = process.env['NODE_ENV'] === 'production';
     const cookieDomain = isProduction
       ? this.configService.get<string>('branding.cookieDomain')
@@ -60,7 +64,7 @@ export class AuthController {
       secure: isProduction,
       sameSite: 'lax',
       path: '/',
-      maxAge: 900 * 1000,
+      maxAge: accessMaxAgeSeconds * 1000,
       domain: cookieDomain,
     });
 
@@ -91,6 +95,39 @@ export class AuthController {
     res.clearCookie('savspot_access', { path: '/', secure: isProduction, sameSite: 'lax', domain: cookieDomain });
     res.clearCookie('savspot_refresh', { path: '/api/auth/refresh', secure: isProduction, sameSite: 'lax', domain: cookieDomain });
     res.clearCookie('savspot_session', { path: '/', secure: isProduction, sameSite: 'lax', domain: cookieDomain });
+  }
+
+  /**
+   * Write auth cookies from an auth-service result, preferring the
+   * Phase 5 Supabase session (ADR-0009 cookie swap) when present and
+   * falling back to the custom RS256 pair. Returns true when cookies
+   * were set (false for results that carry no tokens, e.g. mfaRequired).
+   */
+  private applyAuthCookies(res: Response, result: Record<string, unknown>): boolean {
+    const supabaseSession = result['supabaseSession'] as
+      | { accessToken: string; refreshToken: string; expiresIn: number }
+      | undefined;
+    if (supabaseSession) {
+      this.clearAuthCookies(res);
+      this.setAuthCookies(
+        res,
+        {
+          accessToken: supabaseSession.accessToken,
+          refreshToken: supabaseSession.refreshToken,
+        },
+        supabaseSession.expiresIn,
+      );
+      return true;
+    }
+
+    const accessToken = result['accessToken'];
+    const refreshToken = result['refreshToken'];
+    if (typeof accessToken === 'string' && typeof refreshToken === 'string') {
+      this.clearAuthCookies(res);
+      this.setAuthCookies(res, { accessToken, refreshToken });
+      return true;
+    }
+    return false;
   }
 
   @Public()
@@ -131,10 +168,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.login(dto.email, dto.password);
-    if ('accessToken' in result && 'refreshToken' in result) {
-      this.clearAuthCookies(res);
-      this.setAuthCookies(res, { accessToken: result.accessToken as string, refreshToken: result.refreshToken as string });
-    }
+    this.applyAuthCookies(res, result);
     return result;
   }
 
@@ -144,7 +178,7 @@ export class AuthController {
   @ApiOperation({ summary: 'Logout and blacklist token' })
   @ApiResponse({ status: 200, description: 'Logged out successfully' })
   async logout(
-    @CurrentUser() user: { jti: string; exp: number },
+    @CurrentUser() user: { jti?: string; exp?: number },
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.logout(user.jti, user.exp);
@@ -168,8 +202,7 @@ export class AuthController {
       throw new BadRequestException('Refresh token is required');
     }
     const result = await this.authService.refreshTokens(refreshToken);
-    this.clearAuthCookies(res);
-    this.setAuthCookies(res, { accessToken: result.accessToken as string, refreshToken: result.refreshToken as string });
+    this.applyAuthCookies(res, result);
     return result;
   }
 

@@ -66,6 +66,16 @@ function makeEmailService() {
   };
 }
 
+function makeSupabaseAuth() {
+  return {
+    isEnabled: vi.fn().mockReturnValue(false),
+    isDualIssueEnabled: vi.fn().mockReturnValue(false),
+    provisionUser: vi.fn(),
+    createSession: vi.fn(),
+    refreshSession: vi.fn(),
+  };
+}
+
 function makeUser(overrides: Record<string, unknown> = {}) {
   return {
     id: USER_ID,
@@ -104,6 +114,7 @@ describe('AuthService', () => {
   let tokenService: ReturnType<typeof makeTokenService>;
   let passwordService: ReturnType<typeof makePasswordService>;
   let emailService: ReturnType<typeof makeEmailService>;
+  let supabaseAuth: ReturnType<typeof makeSupabaseAuth>;
 
   beforeEach(() => {
     prisma = makePrisma();
@@ -111,13 +122,14 @@ describe('AuthService', () => {
     tokenService = makeTokenService();
     passwordService = makePasswordService();
     emailService = makeEmailService();
+    supabaseAuth = makeSupabaseAuth();
     service = new AuthService(
       prisma as never,
       redis as never,
       tokenService as never,
       passwordService as never,
       emailService as never,
-      { isEnabled: () => false } as never, // SupabaseAuthService stub
+      supabaseAuth as never,
     );
   });
 
@@ -432,6 +444,72 @@ describe('AuthService', () => {
         }),
       );
     });
+
+    // --- Phase 5 cookie swap (ADR-0009) ---
+
+    it('returns a supabaseSession when dual-issue is enabled and user is linked', async () => {
+      supabaseAuth.isEnabled.mockReturnValue(true);
+      supabaseAuth.isDualIssueEnabled.mockReturnValue(true);
+      supabaseAuth.createSession.mockResolvedValue({
+        accessToken: 'supa-access',
+        refreshToken: 'supa-refresh',
+        expiresIn: 3600,
+      });
+      prisma.user.findUnique.mockResolvedValue(
+        makeUser({ supabaseUserId: 'sup-user-1', memberships: [makeMembership()] }),
+      );
+      passwordService.compare.mockResolvedValue(true);
+
+      const result = (await service.login(
+        'john@example.com',
+        'correct',
+      )) as Record<string, unknown>;
+
+      expect(supabaseAuth.createSession).toHaveBeenCalledWith('john@example.com');
+      expect(result['supabaseSession']).toEqual({
+        accessToken: 'supa-access',
+        refreshToken: 'supa-refresh',
+        expiresIn: 3600,
+      });
+      // RS256 pair is still issued as the fallback.
+      expect(result['accessToken']).toBe('access-token-abc');
+    });
+
+    it('does not mint a Supabase session when dual-issue is disabled', async () => {
+      supabaseAuth.isEnabled.mockReturnValue(true);
+      supabaseAuth.isDualIssueEnabled.mockReturnValue(false);
+      prisma.user.findUnique.mockResolvedValue(
+        makeUser({ supabaseUserId: 'sup-user-1', memberships: [] }),
+      );
+      passwordService.compare.mockResolvedValue(true);
+
+      const result = (await service.login(
+        'john@example.com',
+        'correct',
+      )) as Record<string, unknown>;
+
+      expect(supabaseAuth.createSession).not.toHaveBeenCalled();
+      expect(result['supabaseSession']).toBeUndefined();
+      expect(result['accessToken']).toBe('access-token-abc');
+    });
+
+    it('falls back to RS256 (no supabaseSession) when the session mint fails', async () => {
+      supabaseAuth.isEnabled.mockReturnValue(true);
+      supabaseAuth.isDualIssueEnabled.mockReturnValue(true);
+      supabaseAuth.createSession.mockResolvedValue(null);
+      prisma.user.findUnique.mockResolvedValue(
+        makeUser({ supabaseUserId: 'sup-user-1', memberships: [] }),
+      );
+      passwordService.compare.mockResolvedValue(true);
+
+      const result = (await service.login(
+        'john@example.com',
+        'correct',
+      )) as Record<string, unknown>;
+
+      expect(result['supabaseSession']).toBeUndefined();
+      expect(result['accessToken']).toBe('access-token-abc');
+    });
   });
 
   // -----------------------------------------------------------------------
@@ -448,6 +526,14 @@ describe('AuthService', () => {
         'jti-123',
         new Date(exp * 1000),
       );
+    });
+
+    it('skips blacklisting for a Supabase ES256 session (no jti/exp)', async () => {
+      // The dual-stack strategy's Supabase payload has no jti/exp; logout
+      // must not attempt to blacklist (which would write Invalid Date).
+      await service.logout(undefined, undefined);
+
+      expect(tokenService.blacklistToken).not.toHaveBeenCalled();
     });
   });
 
@@ -471,7 +557,11 @@ describe('AuthService', () => {
         makeUser({ memberships: [makeMembership()] }),
       );
 
-      const result = await service.refreshTokens('valid-refresh-token');
+      const result = (await service.refreshTokens('valid-refresh-token')) as {
+        user: Record<string, unknown>;
+        accessToken: string;
+        refreshToken: string;
+      };
 
       expect(result.accessToken).toBe('access-token-abc');
       expect(result.refreshToken).toBe('refresh-token-xyz');
@@ -510,6 +600,45 @@ describe('AuthService', () => {
 
       await expect(
         service.refreshTokens('bad-token'),
+      ).rejects.toThrow(UnauthorizedException);
+    });
+
+    // --- Phase 5 cookie swap (ADR-0009): Supabase opaque refresh token ---
+
+    it('exchanges a Supabase refresh token when RS256 verify fails and dual-issue is on', async () => {
+      tokenService.verifyToken.mockImplementation(() => {
+        throw new Error('not a jwt');
+      });
+      supabaseAuth.isDualIssueEnabled.mockReturnValue(true);
+      supabaseAuth.refreshSession.mockResolvedValue({
+        accessToken: 'supa-access-2',
+        refreshToken: 'supa-refresh-2',
+        expiresIn: 3600,
+      });
+
+      const result = (await service.refreshTokens(
+        'supabase-opaque-refresh',
+      )) as Record<string, unknown>;
+
+      expect(supabaseAuth.refreshSession).toHaveBeenCalledWith(
+        'supabase-opaque-refresh',
+      );
+      expect(result['supabaseSession']).toEqual({
+        accessToken: 'supa-access-2',
+        refreshToken: 'supa-refresh-2',
+        expiresIn: 3600,
+      });
+    });
+
+    it('throws Unauthorized when RS256 verify fails and Supabase refresh also fails', async () => {
+      tokenService.verifyToken.mockImplementation(() => {
+        throw new Error('not a jwt');
+      });
+      supabaseAuth.isDualIssueEnabled.mockReturnValue(true);
+      supabaseAuth.refreshSession.mockResolvedValue(null);
+
+      await expect(
+        service.refreshTokens('bad'),
       ).rejects.toThrow(UnauthorizedException);
     });
 

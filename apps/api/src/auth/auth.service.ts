@@ -12,7 +12,10 @@ import { RedisService } from '../redis/redis.service';
 import { TokenService, JwtPayload } from './services/token.service';
 import { PasswordService } from './services/password.service';
 import { EmailService } from './services/email.service';
-import { SupabaseAuthService } from './services/supabase-auth.service';
+import {
+  SupabaseAuthService,
+  type SupabaseSession,
+} from './services/supabase-auth.service';
 import { RegisterDto } from './dto/register.dto';
 
 const RESET_TOKEN_PREFIX = 'password-reset:';
@@ -37,6 +40,10 @@ export class AuthService {
    * filled in. Best-effort — a failure here must NOT block the login
    * (the legacy custom-JWT flow keeps working). We just log and move on
    * so the next login can retry.
+   *
+   * Returns the Supabase user id (existing or freshly provisioned), or
+   * `null` when Supabase is disabled or provisioning failed — the caller
+   * uses this to decide whether to mint a Supabase session.
    */
   private async linkToSupabase(user: {
     id: string;
@@ -44,9 +51,9 @@ export class AuthService {
     emailVerified: boolean;
     supabaseUserId: string | null;
     name: string;
-  }): Promise<void> {
-    if (user.supabaseUserId) return;
-    if (!this.supabaseAuth.isEnabled()) return;
+  }): Promise<string | null> {
+    if (user.supabaseUserId) return user.supabaseUserId;
+    if (!this.supabaseAuth.isEnabled()) return null;
 
     try {
       const supabaseUserId = await this.supabaseAuth.provisionUser({
@@ -58,11 +65,13 @@ export class AuthService {
         where: { id: user.id },
         data: { supabaseUserId },
       });
+      return supabaseUserId;
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       this.logger.warn(
         `Failed to link user ${user.id} to Supabase Auth: ${message}`,
       );
+      return null;
     }
   }
 
@@ -144,13 +153,22 @@ export class AuthService {
 
     // Phase 5: lazy-link to Supabase Auth on successful password login.
     // Best-effort — failure is logged but doesn't block the response.
-    await this.linkToSupabase({
+    const supabaseUserId = await this.linkToSupabase({
       id: user.id,
       email: user.email,
       emailVerified: user.emailVerified,
       supabaseUserId: user.supabaseUserId,
       name: user.name,
     });
+
+    // Phase 5 cookie swap (ADR-0009): when dual-issue is enabled and the
+    // user is linked to Supabase Auth, mint a Supabase ES256 session. The
+    // controller writes it into the auth cookies in place of the RS256
+    // pair. Best-effort: a null mint falls back to RS256 transparently.
+    const supabaseSession =
+      supabaseUserId && this.supabaseAuth.isDualIssueEnabled()
+        ? ((await this.supabaseAuth.createSession(user.email)) ?? undefined)
+        : undefined;
 
     // If user has exactly one tenant membership, include it in tokens
     const membership = user.memberships.length === 1 ? user.memberships[0] : undefined;
@@ -159,6 +177,7 @@ export class AuthService {
     return {
       user: this.sanitizeUser(user),
       ...tokens,
+      ...(supabaseSession ? { supabaseSession } : {}),
       memberships: user.memberships.map((m) => ({
         tenantId: m.tenantId,
         role: m.role,
@@ -166,16 +185,38 @@ export class AuthService {
     };
   }
 
-  async logout(jti: string, exp: number): Promise<void> {
+  async logout(jti: string | undefined, exp: number | undefined): Promise<void> {
+    // Supabase ES256 sessions (Phase 5 cookie swap) carry no jti/exp — there
+    // is nothing to blacklist (they are short-lived and self-expiring at
+    // Supabase). Skip the blacklist write; the controller still clears the
+    // cookies. This guards against `new Date(NaN)` reaching the cache table.
+    if (!jti || typeof exp !== 'number' || Number.isNaN(exp)) {
+      return;
+    }
     const expiresAt = new Date(exp * 1000);
     await this.tokenService.blacklistToken(jti, expiresAt);
   }
 
-  async refreshTokens(refreshToken: string) {
+  async refreshTokens(
+    refreshToken: string,
+  ): Promise<
+    | { user: Record<string, unknown>; accessToken: string; refreshToken: string }
+    | { supabaseSession: SupabaseSession }
+  > {
     let payload: JwtPayload & { jti: string; type?: string; exp: number };
     try {
       payload = this.tokenService.verifyToken(refreshToken);
     } catch {
+      // Not a custom RS256 token. Under the Phase 5 cookie swap the
+      // savspot_refresh cookie may hold a Supabase (opaque) refresh
+      // token — try exchanging it before giving up.
+      if (this.supabaseAuth.isDualIssueEnabled()) {
+        const supabaseSession =
+          await this.supabaseAuth.refreshSession(refreshToken);
+        if (supabaseSession) {
+          return { supabaseSession };
+        }
+      }
       throw new UnauthorizedException('Invalid refresh token');
     }
 

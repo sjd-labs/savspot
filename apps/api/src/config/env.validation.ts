@@ -103,6 +103,16 @@ export const envSchema = z.object({
     .string()
     .default('savspot-uploads'),
 
+  // ---- Phase 5: dual-issue Supabase Auth sessions on login (cookie swap) ----
+  // When 'true' (and SUPABASE_URL + service-role key are set), a successful
+  // password login mints a Supabase ES256 session and the API writes it into
+  // the httpOnly savspot_access/savspot_refresh cookies instead of the custom
+  // RS256 pair. The dual-stack JWT strategy validates the ES256 cookie. Flip
+  // back to 'false' to instantly revert to RS256-only (see ADR-0009).
+  SUPABASE_AUTH_DUAL_ISSUE: z
+    .enum(['true', 'false'])
+    .default('false'),
+
   // ---- Storage provider selection (r2 = current, supabase = post-Phase-3 cutover) ----
   STORAGE_PROVIDER: z
     .enum(['r2', 'supabase'])

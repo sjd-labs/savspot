@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (planning) — implementation deferred to follow-up PRs as described under "Decision".
+Accepted (planning) — **partially implemented; see the 2026-05-27 revision below, which supersedes the Bearer-token web plan in Steps 1 & 3.** Step 4 (RS256 retirement) remains deferred and is gated on a production coverage metric.
 
 ## Context
 
@@ -19,6 +19,82 @@ The API side is ready. What is still missing:
 3. **There is no coverage metric.** "Retire RS256 once Supabase coverage is high" is not actionable without a number.
 
 This ADR records the agreed migration shape so that subsequent PRs can land each step in isolation without rebuilding the plan from scratch.
+
+## Revision — 2026-05-27: server-side cookie swap (supersedes Steps 1 & 3)
+
+When implementation started, the original plan's premise turned out to be
+wrong about the web client. The plan below (Steps 1 & 3) assumes the browser
+**holds the token and sends `Authorization: Bearer`**. In reality `apps/web`
+is **cookie-based**: `login()` never reads tokens from the response body —
+the API sets httpOnly `savspot_access` / `savspot_refresh` cookies, and the
+dual-stack `JwtStrategy.extractToken` already reads the `savspot_access`
+cookie first (and ES256-routes it). Following the literal plan would have
+moved tokens out of httpOnly cookies into JS-readable storage — an
+XSS-exposure regression on the auth path.
+
+So Steps 1 & 3 were **replaced** with a **server-side cookie swap** that keeps
+the browser exactly as it is:
+
+- **No web-client changes.** The browser stays cookie-based; `@supabase/supabase-js`
+  is **not** added to `apps/web` (original Step 1 is dropped as unnecessary).
+- **Login mint (Step 2, kept).** On successful password login, when
+  `SupabaseAuthService.isDualIssueEnabled()` (i.e. `SUPABASE_AUTH_DUAL_ISSUE=true`
+  + Supabase configured) and the user is linked, `AuthService.login` mints a
+  Supabase ES256 session via the Pattern B flow (`generateLink` → `verifyOtp`,
+  see `createSession`). The custom RS256 pair is still generated as a fallback.
+- **Cookie swap (replaces Step 3).** `AuthController.applyAuthCookies` writes
+  the Supabase access/refresh tokens into the existing httpOnly
+  `savspot_access` / `savspot_refresh` cookies (access-cookie maxAge follows
+  the Supabase `expires_in`) **instead of** the RS256 pair when a session was
+  minted. Subsequent requests carry the ES256 cookie → `JwtStrategy` routes to
+  the Supabase validator automatically.
+- **Refresh branch.** `AuthService.refreshTokens` detects a Supabase (opaque)
+  refresh token — the RS256 `verifyToken` throws on it — and exchanges it via
+  `SupabaseAuthService.refreshSession`, returning a `supabaseSession` the
+  controller writes back to the cookies.
+- **Tenant-claim parity.** `JwtStrategy.validateSupabase` now embeds the
+  single-membership `tenantId`/`tenantRole` (mirroring the RS256 login path),
+  so tenant-scoped routes that fall back to the JWT `tenantId` (rather than a
+  `:tenantId` route param) keep working under an ES256 session.
+
+Rollback is unchanged in spirit: set `SUPABASE_AUTH_DUAL_ISSUE=false` and new
+logins/refreshes go back to RS256-only; in-flight Supabase sessions fail their
+next refresh and re-login on RS256.
+
+**Known limitations of the cookie swap (flag-off-by-default; revisit before
+relying on it in a real multi-tenant prod):**
+
+- **Logout does not revoke the Supabase session server-side.** `logout`
+  clears the cookies (so the browser is logged out) and, for an ES256
+  session, skips the RS256 blacklist (the payload has no `jti`/`exp` — see
+  the `logout` guard). The Supabase opaque refresh token is not revoked at
+  Supabase, so it stays valid until it expires. Acceptable because the
+  refresh cookie is httpOnly + scoped to `/api/auth/refresh` and the access
+  token is short-lived; a future hardening can call the Supabase admin
+  sign-out on logout. The RS256 path still blacklists its refresh `jti`.
+- **Refresh-cookie maxAge is fixed at 7 days**, independent of the Supabase
+  project's refresh-token TTL. If Supabase's window is shorter, the browser
+  may hold a `savspot_refresh` cookie that Supabase rejects, producing an
+  early 401-then-relogin (functionally safe, just surprising). Tune the
+  Supabase refresh TTL to ≥7 days, or derive the cookie maxAge from config.
+- **Dual-issue mint only succeeds reliably for backfilled/linked users.**
+  `SupabaseAuthService.provisionUser` looks users up with
+  `listUsers({ perPage: 1 })` + client-side email filter, so it can't find a
+  pre-existing Supabase user that isn't the first row; for those it attempts
+  `createUser`, hits a duplicate-email error, and the mint falls back to
+  RS256. In the backfilled steady state (`pnpm admin:backfill-supabase-users`
+  persists `supabaseUserId`, so `linkToSupabase` short-circuits before
+  `provisionUser`) this path isn't hit. Fix `provisionUser` to paginate or
+  use a server-side email filter before depending on first-login provisioning.
+- **MFA-enabled users are excluded** — the MFA challenge/recovery endpoints
+  return tokens in the body without setting cookies, so they never enter the
+  cookie swap. Out of scope here; note for the Step 4 coverage accounting.
+
+**Coverage metric note:** the `jwt_validated` PostHog event (below) is **not
+yet wired** — it remains a prerequisite for the Step 4 retirement decision, and
+that decision is moot while managed signups are closed (`MANAGED_HOSTING_CLOSED`).
+
+The original Bearer-token plan is preserved below for the historical record.
 
 ## Decision
 

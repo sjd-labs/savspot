@@ -91,6 +91,7 @@ describe('JwtStrategy (dual-stack)', () => {
       id: 'savspot-user-99',
       email: 'sb@example.com',
       role: 'USER',
+      memberships: [],
     });
 
     // Hand-craft an ES256-headered JWT; only the header matters for branching.
@@ -118,6 +119,77 @@ describe('JwtStrategy (dual-stack)', () => {
     });
     expect(result.sub).toBe('savspot-user-99');
     expect(result.email).toBe('sb@example.com');
+  });
+
+  it('embeds the single-membership tenant claims on the ES256 path (parity with RS256)', async () => {
+    const supabaseAuth = makeSupabaseAuth();
+    supabaseAuth.verifyToken.mockResolvedValue({ sub: 'sup-user-tenant' });
+
+    const prisma = makePrisma();
+    prisma.user.findUnique.mockResolvedValue({
+      id: 'savspot-user-t',
+      email: 't@example.com',
+      role: 'USER',
+      memberships: [{ tenantId: 'tenant-xyz', role: 'OWNER' }],
+    });
+
+    const headerB64 = Buffer.from(
+      JSON.stringify({ alg: 'ES256', typ: 'JWT' }),
+    ).toString('base64url');
+    const payloadB64 = Buffer.from(
+      JSON.stringify({ sub: 'sup-user-tenant' }),
+    ).toString('base64url');
+    const fakeToken = [headerB64, payloadB64, 'sig'].join('.');
+
+    const strategy = new JwtStrategy(
+      makeTokenService() as never,
+      supabaseAuth as never,
+      prisma as never,
+    );
+
+    const result = await strategy.validate(
+      makeReq({ headers: { authorization: `Bearer ${fakeToken}` } }) as never,
+    );
+
+    expect(result.tenantId).toBe('tenant-xyz');
+    expect(result.tenantRole).toBe('OWNER');
+  });
+
+  it('omits tenant claims on the ES256 path when the user has multiple memberships', async () => {
+    const supabaseAuth = makeSupabaseAuth();
+    supabaseAuth.verifyToken.mockResolvedValue({ sub: 'sup-user-multi' });
+
+    const prisma = makePrisma();
+    prisma.user.findUnique.mockResolvedValue({
+      id: 'savspot-user-m',
+      email: 'm@example.com',
+      role: 'USER',
+      memberships: [
+        { tenantId: 'tenant-a', role: 'OWNER' },
+        { tenantId: 'tenant-b', role: 'STAFF' },
+      ],
+    });
+
+    const headerB64 = Buffer.from(
+      JSON.stringify({ alg: 'ES256', typ: 'JWT' }),
+    ).toString('base64url');
+    const payloadB64 = Buffer.from(
+      JSON.stringify({ sub: 'sup-user-multi' }),
+    ).toString('base64url');
+    const fakeToken = [headerB64, payloadB64, 'sig'].join('.');
+
+    const strategy = new JwtStrategy(
+      makeTokenService() as never,
+      supabaseAuth as never,
+      prisma as never,
+    );
+
+    const result = await strategy.validate(
+      makeReq({ headers: { authorization: `Bearer ${fakeToken}` } }) as never,
+    );
+
+    expect(result.tenantId).toBeUndefined();
+    expect(result.tenantRole).toBeUndefined();
   });
 
   it('rejects ES256 tokens whose sub is not linked to a SavSpot user', async () => {

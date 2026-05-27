@@ -115,6 +115,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         id: true,
         email: true,
         role: true,
+        memberships: { select: { tenantId: true, role: true } },
       },
     });
 
@@ -128,10 +129,18 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       );
     }
 
+    // Mirror the RS256 login path: when the user has exactly one tenant
+    // membership, embed it so tenant-scoped routes that fall back to the
+    // JWT `tenantId` (rather than a `:tenantId` route param) keep working.
+    const membership =
+      user.memberships.length === 1 ? user.memberships[0] : undefined;
+
     return {
       sub: user.id,
       email: user.email,
       platformRole: user.role,
+      tenantId: membership?.tenantId,
+      tenantRole: membership?.role,
     };
   }
 }

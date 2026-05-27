@@ -16,6 +16,16 @@ export interface SupabaseJwtPayload extends JWTPayload {
 }
 
 /**
+ * A minted Supabase Auth session, normalized to the fields the cookie
+ * swap needs. `expiresIn` is seconds (drives the access-cookie maxAge).
+ */
+export interface SupabaseSession {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
+/**
  * Phase 5: wraps Supabase Auth admin operations + JWT verification.
  *
  * The dual-stack strategy is:
@@ -64,6 +74,93 @@ export class SupabaseAuthService {
   /** True when SUPABASE_URL + service-role key are wired. */
   isEnabled(): boolean {
     return this.enabled;
+  }
+
+  /**
+   * True when the operator has opted into the Phase 5 cookie swap
+   * (`SUPABASE_AUTH_DUAL_ISSUE=true`) AND Supabase Auth is configured.
+   * Gates whether login mints + returns a Supabase session.
+   */
+  isDualIssueEnabled(): boolean {
+    return (
+      this.enabled &&
+      this.configService.get<string>('SUPABASE_AUTH_DUAL_ISSUE', 'false') ===
+        'true'
+    );
+  }
+
+  /**
+   * Mint a Supabase Auth session for an already-authenticated user
+   * (Pattern B, server-mediated — see ADR-0009). We never move the
+   * password into Supabase: instead we generate a magiclink admin-side,
+   * then exchange its `hashed_token` for a session via `verifyOtp`.
+   *
+   * Best-effort: returns `null` (never throws) on any failure so a
+   * Supabase hiccup can't break a login that already verified the
+   * password. The caller falls back to the custom RS256 cookie.
+   */
+  async createSession(email: string): Promise<SupabaseSession | null> {
+    if (!this.admin) return null;
+    try {
+      const link = await this.admin.auth.admin.generateLink({
+        type: 'magiclink',
+        email,
+      });
+      const hashedToken = link.data?.properties?.hashed_token;
+      if (link.error || !hashedToken) {
+        this.logger.warn(
+          `Supabase session mint: generateLink failed (${link.error?.message ?? 'no hashed_token'})`,
+        );
+        return null;
+      }
+
+      const verified = await this.admin.auth.verifyOtp({
+        type: 'magiclink',
+        token_hash: hashedToken,
+      });
+      const session = verified.data?.session;
+      if (verified.error || !session) {
+        this.logger.warn(
+          `Supabase session mint: verifyOtp failed (${verified.error?.message ?? 'no session'})`,
+        );
+        return null;
+      }
+
+      return {
+        accessToken: session.access_token,
+        refreshToken: session.refresh_token,
+        expiresIn: session.expires_in ?? 3600,
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Supabase session mint threw: ${message}`);
+      return null;
+    }
+  }
+
+  /**
+   * Exchange a Supabase (opaque) refresh token for a fresh session.
+   * Used by the refresh endpoint when the savspot_refresh cookie holds
+   * a Supabase token rather than a custom RS256 JWT. Best-effort —
+   * returns `null` on failure so the caller can 401 and force re-login.
+   */
+  async refreshSession(refreshToken: string): Promise<SupabaseSession | null> {
+    if (!this.admin) return null;
+    try {
+      const { data, error } = await this.admin.auth.refreshSession({
+        refresh_token: refreshToken,
+      });
+      if (error || !data.session) return null;
+      return {
+        accessToken: data.session.access_token,
+        refreshToken: data.session.refresh_token,
+        expiresIn: data.session.expires_in ?? 3600,
+      };
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.warn(`Supabase session refresh threw: ${message}`);
+      return null;
+    }
   }
 
   /**
