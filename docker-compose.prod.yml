@@ -26,20 +26,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── Cache / Queue ─────────────────────────────────────────────────────────
-  redis:
-    image: redis:7-alpine
-    container_name: savspot-redis
-    restart: unless-stopped
-    command: redis-server --requirepass ${REDIS_PASSWORD:-}
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-}", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   # ── Database Migrations ───────────────────────────────────────────────────
   migrate:
     build:
@@ -75,7 +61,6 @@ services:
       NODE_ENV: production
       PORT: "3001"
       DATABASE_URL: postgresql://${POSTGRES_USER:-savspot}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-savspot}?schema=public
-      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379
       WEB_URL: ${WEB_URL:-http://localhost}
       JWT_PRIVATE_KEY_BASE64: ${JWT_PRIVATE_KEY_BASE64}
       JWT_PUBLIC_KEY_BASE64: ${JWT_PUBLIC_KEY_BASE64}
@@ -107,8 +92,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      redis:
-        condition: service_healthy
       migrate:
         condition: service_completed_successfully
     healthcheck:
@@ -118,29 +101,13 @@ services:
       start_period: 30s
       retries: 3
 
-  # ── Background Worker ─────────────────────────────────────────────────────
-  worker:
-    build:
-      context: .
-      dockerfile: apps/api/Dockerfile.worker
-    container_name: savspot-worker
-    restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      WORKER_MODE: "true"
-      DATABASE_URL: postgresql://${POSTGRES_USER:-savspot}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-savspot}?schema=public
-      REDIS_URL: redis://:${REDIS_PASSWORD:-}@redis:6379
-      WEB_URL: ${WEB_URL:-http://localhost}
-      RESEND_API_KEY: ${RESEND_API_KEY:-}
-      RESEND_FROM_EMAIL: ${RESEND_FROM_EMAIL:-noreply@localhost}
-      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
+  # ── Background Jobs ───────────────────────────────────────────────────────
+  # No separate worker container. Background jobs (crons + events) are Inngest
+  # functions served by the `api` container at /api/inngest. Point an Inngest
+  # instance — Inngest Cloud or the self-hosted dev server — at that endpoint
+  # to drive them. BullMQ + Redis were retired in the Fly → Supabase+Vercel
+  # migration; the API's KV needs now run on Postgres (the `cache_entries`
+  # table), so no Redis service is required.
 
   # ── Web Frontend ──────────────────────────────────────────────────────────
   web:
@@ -188,6 +155,5 @@ services:
 
 volumes:
   postgres_data:
-  redis_data:
   caddy_data:
   caddy_config:

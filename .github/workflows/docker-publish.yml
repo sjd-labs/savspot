@@ -22,8 +22,6 @@ jobs:
         include:
           - image: savspot-api
             dockerfile: apps/api/Dockerfile
-          - image: savspot-worker
-            dockerfile: apps/api/Dockerfile.worker
           - image: savspot-web
             dockerfile: apps/web/Dockerfile
     steps:
