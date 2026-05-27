@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (planning) — **partially implemented; see the 2026-05-27 revision below, which supersedes the Bearer-token web plan in Steps 1 & 3.** Step 4 (RS256 retirement) remains deferred and is gated on a production coverage metric.
+Accepted, then partially superseded. Steps 1–3 shipped as the **2026-05-27 cookie-swap revision below** (which supersedes the Bearer-token web plan). **Step 4 (RS256 retirement) is CLOSED as won't-do (2026-05-27):** the product moved to self-host / open-source-only with managed signups closed (`MANAGED_HOSTING_CLOSED`), so the ≥95%-coverage-for-14-days retirement gate is permanently unreachable. RS256 was never retired and **stays as the permanent auth path** — dual-stack (RS256 + optional Supabase ES256 behind the default-off `SUPABASE_AUTH_DUAL_ISSUE` flag) is the final end state. The coverage instrumentation and Step 4 below are retained for historical context only.
 
 ## Context
 
@@ -90,9 +90,10 @@ relying on it in a real multi-tenant prod):**
   return tokens in the body without setting cookies, so they never enter the
   cookie swap. Out of scope here; note for the Step 4 coverage accounting.
 
-**Coverage metric note:** the `jwt_validated` PostHog event (below) is **not
-yet wired** — it remains a prerequisite for the Step 4 retirement decision, and
-that decision is moot while managed signups are closed (`MANAGED_HOSTING_CLOSED`).
+**Coverage metric note:** the `jwt_validated` PostHog event (below) was **never
+wired**, and won't be — it was only a prerequisite for the Step 4 retirement
+decision, which is now closed as won't-do (see Status). Managed signups are
+closed (`MANAGED_HOSTING_CLOSED`), so coverage can't be accrued and RS256 stays.
 
 The original Bearer-token plan is preserved below for the historical record.
 
@@ -116,7 +117,7 @@ The migration lands as **four** small PRs, each independently shippable and reve
 
 **Step 3 — Web prefers Supabase tokens.** In `apps/web/src/providers/auth-provider.tsx` (or wherever the auth context lives), read `supabaseSession` from the login response and use that token for the `Authorization: Bearer` header. Fall back to the RS256 token if `supabaseSession` is absent. The auth-provider's token-refresh path uses `supabase.auth.refreshSession()` when on the Supabase track.
 
-**Step 4 — RS256 retirement.** Stop generating RS256 tokens in `AuthService` once **coverage ≥ 95% for ≥ 14 consecutive days** (see "Coverage metric"). Public-API consumers using long-lived custom JWTs are migrated via API-key strategy already (`api-key.controller.ts`), so retirement only affects the web/mobile session flow.
+**Step 4 — RS256 retirement.** ~~Stop generating RS256 tokens in `AuthService` once **coverage ≥ 95% for ≥ 14 consecutive days** (see "Coverage metric").~~ **Closed as won't-do (2026-05-27)** — see Status. The retirement gate is unreachable with managed signups closed, so RS256 generation stays in `AuthService` permanently. (Originally: public-API consumers using long-lived custom JWTs are migrated via the API-key strategy `api-key.controller.ts`, so retirement would only have affected the web/mobile session flow.)
 
 ### Coverage metric
 
