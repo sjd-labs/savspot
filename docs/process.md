@@ -14,7 +14,7 @@ the failure modes are concrete.
 ## TL;DR
 
 - **100% of the code in this repository was produced by Claude.**
-  The operator (Stephen, working as SJD Labs, LLC) directed product
+  The operator (SJD Labs, LLC) directed product
   scope, architectural decisions, legal positioning, and operating
   posture. Claude wrote the TypeScript, the SQL, the test files, the
   Vercel pipeline scripts, the privacy policy and terms of service,
@@ -367,8 +367,7 @@ themselves.
 
 ## Contact
 
-The operator: Stephen John Deslate &mdash; SJD Labs, LLC,
-San Diego, California.
+The operator: SJD Labs, LLC.
 
 Questions about this document or the patterns it describes are welcome
 at [legal@savspot.co](mailto:legal@savspot.co) (legal/process) or via
