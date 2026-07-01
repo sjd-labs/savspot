@@ -24,7 +24,7 @@ jobs:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_API_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_API_PROJECT_ID }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
           fetch-depth: 1
