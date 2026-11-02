@@ -1,5 +1,7 @@
 # SavSpot
 
+> ⚠️ **RETIRED 2026-11-02.** No commit since 2026-05-27; unmaintained and undeployed from this checkout. The local-coder-delegation era sections were removed (that workflow was retired 2026-05-07).
+
 Multi-tenant SaaS booking platform for service businesses. Turborepo monorepo: `apps/api` (NestJS), `apps/web` (Next.js App Router), `apps/mobile`, `packages/{shared,ui,embed-widget,mcp-server,ee}`.
 
 ## Commands
@@ -20,13 +22,6 @@ pnpm format / format:check
 - **Payments:** Stripe Connect Express with destination charges + application_fee_amount
 - **Open-core model:** AGPL core + `packages/ee/` (commercial license). EE modules gated by `@RequiresLicense()` guard checking `SAVSPOT_LICENSE_KEY` env var or `Tenant.licenseKey`
 - **Contributions:** DCO (Developer Certificate of Origin) — `git commit -s` for Signed-off-by
-
-## Coder Agent Limits (Stall Prevention)
-- Do NOT delegate if the primary file is >300 lines
-- Do NOT delegate if >3 functions need editing in one file
-- Do NOT delegate if the change involves cross-handler React state management
-- When in doubt: Opus implements directly — faster and more reliable
-- Override: include `CODER_FORCE` in the prompt to bypass the PreToolUse size check
 
 ## Prisma + RLS + Interactive Transactions
 Prisma Client Extensions with `$allOperations` can create nested transactions that break `SELECT ... FOR UPDATE` locks. For booking slot reservation, use `$queryRaw` with explicit transaction.
